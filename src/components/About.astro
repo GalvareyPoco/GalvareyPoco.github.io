@@ -17,7 +17,7 @@ const last = profile.ventures.length - 1;
   <dl class="reveal mb-12 grid gap-4 sm:grid-cols-3">
     {
       p.highlights.map((h) => (
-        <div class="card p-5">
+        <div class="spotlight card p-5">
           <dt class="sr-only">{h.label}</dt>
           <dd class="font-display text-4xl font-bold text-gradient">{h.value}</dd>
           <dd class="mt-1 text-sm text-slate-400">{h.label}</dd>
@@ -44,27 +44,19 @@ const last = profile.ventures.length - 1;
     </div>
 
     <div class="reveal space-y-6">
-      <div class="card flex items-center gap-5 p-5">
-        <img src={profile.avatar} alt={t("about.avatarAlt")} width="80" height="80" class="h-20 w-20 rounded-2xl ring-2 ring-accent/40" loading="lazy" />
-        <div>
-          <p class="font-display text-xl font-bold text-white">{profile.name}</p>
-          <p class="text-sm text-slate-400">{p.title}</p>
-          <p class="mt-1 font-mono text-xs text-accent">@{profile.handle}</p>
-        </div>
-      </div>
-      <div class="card p-5">
+      <div class="spotlight card p-5">
         <p class="mb-3 font-mono text-xs uppercase tracking-widest text-slate-500">{t("about.focus")}</p>
         <ul class="flex flex-wrap gap-2">
           {p.focus.map((f) => <li class="rounded-lg bg-accent/10 px-2.5 py-1 text-sm text-accent">{f}</li>)}
         </ul>
       </div>
-      <div class="card p-5">
+      <div class="spotlight card p-5">
         <p class="mb-3 font-mono text-xs uppercase tracking-widest text-slate-500">{t("about.languages")}</p>
         <ul class="space-y-1.5 text-sm text-slate-300">
           {p.languages.map((l) => <li><span class="text-accent-2">▹</span> {l}</li>)}
         </ul>
       </div>
-      <div class="card p-5">
+      <div class="spotlight card p-5">
         <p class="mb-3 font-mono text-xs uppercase tracking-widest text-slate-500">{t("about.learning")}</p>
         <ul class="space-y-1.5 text-sm text-slate-300">
           {p.learning.map((l) => <li><span class="text-accent-2">▹</span> {l}</li>)}

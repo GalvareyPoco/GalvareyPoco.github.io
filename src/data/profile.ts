@@ -5,6 +5,8 @@ export const profile = {
   name: "Galvarey",
   handle: "GalvareyPoco",
   avatar: "https://avatars.githubusercontent.com/u/61221866",
+  // Same photo, self-hosted so the 3D badge can draw it on a canvas. Path is relative to the site root.
+  photo: "galvarey.jpg",
   available: true,
   ventures: [
     { label: "ITTI", url: "https://www.itti.digital" },

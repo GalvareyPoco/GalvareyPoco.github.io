@@ -22,6 +22,16 @@ The site is in English (`/`), Spanish (`/es/`) and French (`/fr/`). Every text l
 | Work experience | `src/content/experience.json` (dates as `YYYY-MM`; roles with `highlights` get a full card, the rest go under "Earlier"; `order` pins the top roles) |
 | Education | `src/content/education.json` |
 | Projects | `src/content/projects.json` (`summary` and `highlights` per language) |
+| Awards | `src/data/awards.ts` (each one links its public source) |
+| Terminal commands and intro script | `src/components/Terminal.tsx` |
+| Terere intro text | `intro.*` keys in `src/i18n.ts` |
+
+## Interactive bits
+
+- **Terere intro** (`src/components/TerereIntro.tsx`): plays on the first visit only (remembered in `localStorage` as `terere-v1`), skippable with the button or Esc, never shown with reduced motion. `terere` in the terminal replays it.
+- **3D lanyard badge** (`src/components/lanyard/`): three.js + Rapier physics, adapted from React Bits' Lanyard. Downloads lazily after the intro; reduced motion or no WebGL gets a static badge. The photo is `public/galvarey.jpg`.
+- **Terminal** (`src/components/Terminal.tsx`): type `help`. Commands can switch the color theme (`src/lib/theme.ts`, CSS in `global.css`).
+- **Effects** (`src/lib/effects.ts`): scroll reveal, text decrypt, cursor spotlight, scroll progress and the Konami-code matrix rain.
 
 ## Deploy
 
