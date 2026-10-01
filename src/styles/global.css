@@ -152,6 +152,24 @@ html[data-intro] .target-cursor {
 [data-scramble] {
   display: inline-block;
 }
+.sc-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.sc {
+  position: relative;
+}
+.sc.is-noise {
+  color: transparent;
+}
+.sc.is-noise::after {
+  content: attr(data-n);
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  color: var(--color-accent);
+  opacity: 0.85;
+}
 
 /* Words lit by scroll (ScrollReveal). */
 .word {
@@ -223,12 +241,6 @@ html[data-intro] .target-cursor {
 .target-cursor i:nth-child(2) { right: 0; top: 0; border-top-width: 2px; border-right-width: 2px; }
 .target-cursor i:nth-child(3) { left: 0; bottom: 0; border-bottom-width: 2px; border-left-width: 2px; }
 .target-cursor i:nth-child(4) { right: 0; bottom: 0; border-bottom-width: 2px; border-right-width: 2px; }
-.target-cursor:not(.is-locked) {
-  animation: cursor-spin 4s linear infinite;
-}
-@keyframes cursor-spin {
-  to { rotate: 360deg; }
-}
 
 /* Experience timeline dots light up when reached. */
 [data-timeline-dot] {
@@ -255,6 +267,53 @@ html[data-intro] .target-cursor {
   100% { text-shadow: 2px 0 var(--color-accent), -2px 0 #f43f5e; }
 }
 
+/* Light sweep across primary buttons (ShinyText). */
+.shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
+  background-size: 250% 100%;
+  animation: shine 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes shine {
+  0% { background-position: 130% 0; }
+  60%, 100% { background-position: -30% 0; }
+}
+
+/* Rotating badge around the mate in Contact (CircularText). */
+.circ-ring {
+  animation: spin-ring 18s linear infinite;
+  transition: scale 0.4s ease, color 0.3s;
+}
+.circ:hover .circ-ring {
+  scale: 1.08;
+}
+.circ-mate {
+  transition: transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.circ:hover .circ-mate {
+  transform: rotate(-18deg) scale(1.15);
+}
+@keyframes spin-ring {
+  to { rotate: 360deg; }
+}
+
+/* Skill chips while they're falling. */
+.chip-falling {
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.35);
+}
+.chip-falling:active {
+  cursor: grabbing;
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }
@@ -273,7 +332,7 @@ html[data-intro] .target-cursor {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .grain, .marquee-track, .star-ring { animation: none; }
+  .grain, .marquee-track, .star-ring, .shine::after, .circ-ring { animation: none; }
   .word { opacity: 1; }
 }
 
@@ -293,6 +352,19 @@ html[data-intro] .target-cursor {
   font-size: 11px;
   color: #cbd5e1;
   transition: opacity 0.3s;
+}
+.globe-label[data-side] {
+  bottom: auto;
+  top: anchor(center);
+}
+.globe-label[data-side="right"] {
+  left: anchor(right);
+  translate: 8px -50%;
+}
+.globe-label[data-side="left"] {
+  left: auto;
+  right: anchor(left);
+  translate: -8px -50%;
 }
 .globe-label[data-active="true"] {
   border-color: var(--color-accent);

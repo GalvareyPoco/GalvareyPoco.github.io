@@ -15,7 +15,7 @@ const t = useTranslations(lang);
 
 const data: TerminalData = {
   awards: awardLines(lang),
-  journey: journeyFor(lang).map((s) => `📍 ${s.city}, ${s.country} · ${s.span}`),
+  journey: journeyFor(lang).map((s, i) => `${i + 1}. ${s.flag} ${s.title}, ${s.where} · ${s.span}`),
   projects: (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order).map((p) => p.id),
   socials: profile.socials.map((s) => ({ label: s.label, url: s.url })),
   linkedin: profile.socials[1].url,

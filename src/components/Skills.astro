@@ -23,14 +23,19 @@ const ticker = ["React Native", "TypeScript", "Go", "Next.js", "Node.js", "Postg
       {[...ticker2, ...ticker2].map((s) => <span class="whitespace-nowrap transition hover:text-accent-2">{s} <span class="text-accent-2/50">//</span></span>)}
     </div>
   </div>
-  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+  <div class="reveal mb-4 flex justify-end">
+    <button type="button" data-gravity-toggle class="gravity-btn rounded-lg border border-white/10 px-3 py-1.5 font-mono text-xs text-slate-400 transition hover:border-accent/50 hover:text-white" data-drop={t("skills.drop")} data-reset={t("skills.reset")}>
+      ⬇ {t("skills.drop")}
+    </button>
+  </div>
+  <div class="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-gravity-area>
     {
       skillGroups(lang).map((g) => (
         <div class="reveal spotlight card p-5 transition hover:border-accent/30" data-tilt="6">
           <p class="mb-4 font-mono text-xs uppercase tracking-widest text-accent">{g.name}</p>
           <ul class="flex flex-wrap gap-1.5">
             {g.items.map((s) => (
-              <li class="rounded-md border border-white/8 bg-white/[0.03] px-2 py-1 text-sm text-slate-300">{s}</li>
+              <li data-chip class="rounded-md border border-white/8 bg-ink-800/90 px-2 py-1 text-sm whitespace-nowrap text-slate-300">{s}</li>
             ))}
           </ul>
         </div>

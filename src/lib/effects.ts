@@ -8,8 +8,9 @@ const GLYPHS = "アカサタナハマヤラワ0123456789<>/{}[]#$%&*+=";
 const SCRAMBLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#$%&";
 
 /**
- * Decrypt-style text reveal. The real text stays in the flow (invisible) and the noise is drawn on top of it,
- * so the element never changes size and nothing around it moves. Screen readers get the real text via aria-label.
+ * Decrypt-style text reveal. Each character gets its own span: the real glyph stays in place (transparent) and a
+ * noise glyph is drawn on top of it, so the text never changes size, never wraps differently and never goes blank.
+ * Glyphs settle left to right and only change every ~70ms, which reads as decrypting rather than flickering.
  */
 export function scramble(el: HTMLElement, duration = 900) {
   const final = el.dataset.text ?? el.textContent ?? "";
@@ -18,28 +19,59 @@ export function scramble(el: HTMLElement, duration = 900) {
     el.textContent = final;
     return;
   }
-  el.setAttribute("aria-label", final);
-  el.style.position = "relative";
-  el.innerHTML = "";
-  const ghost = document.createElement("span");
-  ghost.textContent = final;
-  ghost.style.visibility = "hidden";
-  ghost.setAttribute("aria-hidden", "true");
-  const live = document.createElement("span");
-  live.setAttribute("aria-hidden", "true");
-  live.style.cssText = "position:absolute;inset:0;overflow:hidden;white-space:inherit";
-  el.append(ghost, live);
+  if (el.dataset.scrambling) return;
+  el.dataset.scrambling = "1";
+  // Noise glyphs match the case of the letter they cover, so their widths stay close.
+  const pools = [/[a-z]/, /[A-Z]/, /[0-9]/];
+  const sets = ["abcdeghknopqrsuvxyz", "ABCDEFGHKLNOPRSTUVXYZ", "0123456789"];
+  const noise = (ch: string) => {
+    const i = pools.findIndex((r) => r.test(ch.normalize("NFD")[0]));
+    const set = i < 0 ? SCRAMBLE : sets[i];
+    return set[(Math.random() * set.length) | 0];
+  };
+  const cells: { span: HTMLElement; ch: string; at: number }[] = [];
+  const total = [...final.replace(/\s/g, "")].length || 1;
+  const frag = document.createDocumentFragment();
+  for (const part of final.split(/(\s+)/)) {
+    if (!part) continue;
+    if (/^\s+$/.test(part)) {
+      frag.append(part);
+      continue;
+    }
+    // Words stay unbreakable so wrapping matches the plain text exactly.
+    const word = document.createElement("span");
+    word.className = "sc-word";
+    for (const ch of part) {
+      const span = document.createElement("span");
+      span.className = "sc is-noise";
+      span.textContent = ch;
+      span.dataset.n = noise(ch);
+      word.append(span);
+      const order = cells.length / total;
+      cells.push({ span, ch, at: duration * (0.15 + order * 0.6 + Math.random() * 0.25) });
+    }
+    frag.append(word);
+  }
+  el.replaceChildren(frag);
   const start = performance.now();
+  let lastSwap = start;
   const step = (now: number) => {
-    const p = Math.min(1, (now - start) / duration);
-    const shown = Math.floor(final.length * p);
-    let out = final.slice(0, shown);
-    for (let i = shown; i < final.length; i++) out += /\s/.test(final[i]) ? final[i] : SCRAMBLE[(Math.random() * SCRAMBLE.length) | 0];
-    live.textContent = out;
-    if (p < 1) requestAnimationFrame(step);
+    const t = now - start;
+    const swap = now - lastSwap > 70;
+    if (swap) lastSwap = now;
+    let pending = 0;
+    for (const c of cells) {
+      if (t >= c.at) {
+        if (c.span.classList.contains("is-noise")) c.span.classList.remove("is-noise");
+      } else {
+        pending++;
+        if (swap && Math.random() < 0.6) c.span.dataset.n = noise(c.ch);
+      }
+    }
+    if (pending) requestAnimationFrame(step);
     else {
       el.textContent = final;
-      el.removeAttribute("aria-label");
+      delete el.dataset.scrambling;
     }
   };
   requestAnimationFrame(step);
@@ -270,7 +302,11 @@ function clickSpark() {
   });
 }
 
-/** Crosshair brackets that follow the pointer and lock onto links and buttons (React Bits' TargetCursor). */
+/**
+ * Crosshair brackets that follow the pointer and lock onto links and buttons (React Bits' TargetCursor).
+ * The locked element's box is re-read every frame, so the brackets stay on it while the page scrolls or the
+ * element moves (magnet buttons, tilted cards), and what is under the pointer is re-checked after scrolling.
+ */
 function targetCursor() {
   if (!finePointer() || reduced()) return;
   const box = document.createElement("div");
@@ -278,54 +314,92 @@ function targetCursor() {
   box.setAttribute("aria-hidden", "true");
   box.innerHTML = "<i></i><i></i><i></i><i></i>";
   document.body.append(box);
-  let x = innerWidth / 2;
-  let y = innerHeight / 2;
-  let tx = x;
-  let ty = y;
+  const TARGETS = "a, button, input, textarea, select, summary, [data-cursor]";
+  let px = -100;
+  let py = -100;
+  let x = px;
+  let y = py;
   let w = 22;
   let h = 22;
-  let tw = w;
-  let th = h;
+  let angle = 0;
+  let lock: HTMLElement | null = null;
   let visible = false;
+  const show = (on: boolean) => {
+    if (visible === on) return;
+    visible = on;
+    box.style.opacity = on ? "1" : "0";
+  };
+  const pick = (from?: EventTarget | null) => {
+    const hit = (from instanceof Element ? from : document.elementFromPoint(px, py)) as HTMLElement | null;
+    const t = hit?.closest?.<HTMLElement>(TARGETS) ?? null;
+    // Skip the intro and anything huge, where corner brackets would just frame the screen.
+    const next = t && !t.closest(".intro-root") && t.offsetWidth < innerWidth * 0.8 && t.offsetHeight < innerHeight * 0.6 ? t : null;
+    if (next && !lock) {
+      // Brackets are 4-fold symmetric while square: unwind at most 45 degrees instead of snapping.
+      angle = ((((angle + 45) % 90) + 90) % 90) - 45;
+    }
+    lock = next;
+    box.classList.toggle("is-locked", !!lock);
+  };
   addEventListener(
     "pointermove",
     (e) => {
-      if (e.pointerType !== "mouse") return;
-      const t = (e.target as HTMLElement).closest?.<HTMLElement>("a, button, input, [data-cursor]");
-      if (t && !t.closest(".intro-root")) {
-        const r = t.getBoundingClientRect();
+      if (e.pointerType !== "mouse") return show(false);
+      if (!visible) {
+        x = e.clientX;
+        y = e.clientY;
+      }
+      px = e.clientX;
+      py = e.clientY;
+      pick(e.target);
+      show(!document.documentElement.hasAttribute("data-intro"));
+    },
+    { passive: true },
+  );
+  let scrollQueued = false;
+  addEventListener(
+    "scroll",
+    () => {
+      if (!visible || scrollQueued) return;
+      scrollQueued = true;
+      requestAnimationFrame(() => {
+        scrollQueued = false;
+        pick();
+      });
+    },
+    { passive: true },
+  );
+  document.addEventListener("mouseout", (e) => !e.relatedTarget && show(false));
+  addEventListener("blur", () => show(false));
+  let last = performance.now();
+  const frame = (now: number) => {
+    const dt = Math.min(64, now - last);
+    last = now;
+    let tx = px;
+    let ty = py;
+    let tw = 22;
+    let th = 22;
+    if (lock) {
+      const r = lock.getBoundingClientRect();
+      if (!r.width || !lock.isConnected) pick();
+      else {
         tx = r.left + r.width / 2;
         ty = r.top + r.height / 2;
         tw = r.width + 12;
         th = r.height + 12;
-        box.classList.add("is-locked");
-      } else {
-        tx = e.clientX;
-        ty = e.clientY;
-        tw = th = 22;
-        box.classList.remove("is-locked");
       }
-      if (!visible) {
-        visible = true;
-        x = tx;
-        y = ty;
-        box.style.opacity = "1";
-      }
-    },
-    { passive: true },
-  );
-  document.addEventListener("pointerleave", () => {
-    visible = false;
-    box.style.opacity = "0";
-  });
-  const frame = () => {
-    x += (tx - x) * 0.25;
-    y += (ty - y) * 0.25;
-    w += (tw - w) * 0.2;
-    h += (th - h) * 0.2;
-    box.style.transform = `translate(${x - w / 2}px, ${y - h / 2}px)`;
-    box.style.width = `${w}px`;
-    box.style.height = `${h}px`;
+    }
+    const k = Math.min(1, dt / 40);
+    x += (tx - x) * k;
+    y += (ty - y) * k;
+    w += (tw - w) * k * 0.8;
+    h += (th - h) * k * 0.8;
+    angle = lock ? angle * (1 - k * 0.6) : (angle + dt * 0.09) % 360;
+    if (visible) {
+      box.style.transform = `translate(${x - w / 2}px, ${y - h / 2}px) rotate(${angle}deg)`;
+      box.style.width = `${w}px`;
+      box.style.height = `${h}px`;
+    }
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
@@ -467,6 +541,35 @@ function dotGrid() {
   resize();
 }
 
+/** The skills "drop them" toggle; also reachable from the command menu. */
+function skillsGravity() {
+  const btn = document.querySelector<HTMLButtonElement>("[data-gravity-toggle]");
+  const area = document.querySelector<HTMLElement>("[data-gravity-area]");
+  if (!btn || !area) return;
+  if (reduced()) {
+    btn.hidden = true;
+    return;
+  }
+  let stop: (() => void) | null = null;
+  let busy = false;
+  const toggle = async () => {
+    if (busy) return;
+    busy = true;
+    if (stop) {
+      stop();
+      stop = null;
+      btn.textContent = `⬇ ${btn.dataset.drop}`;
+    } else {
+      const { dropChips } = await import("./gravity");
+      stop = await dropChips(area);
+      btn.textContent = `↺ ${btn.dataset.reset}`;
+    }
+    busy = false;
+  };
+  btn.addEventListener("click", toggle);
+  addEventListener("skills:gravity", () => !stop && toggle());
+}
+
 export function initEffects() {
   // The hero name decrypts again once the intro curtain lifts.
   addEventListener("intro:done", () => document.querySelectorAll<HTMLElement>("#top [data-scramble]").forEach((el) => scramble(el, 1200)));
@@ -483,4 +586,5 @@ export function initEffects() {
   timeline();
   rotate();
   dotGrid();
+  skillsGravity();
 }
