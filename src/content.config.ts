@@ -35,6 +35,8 @@ const experience = defineCollection({
     current: z.boolean().default(false),
     highlights: z.array(z.string()).default([]),
     placeholder: z.boolean().default(false),
+    // Optional manual position; lower comes first. Unset roles sort by date after these.
+    order: z.number().optional(),
   }),
 });
 

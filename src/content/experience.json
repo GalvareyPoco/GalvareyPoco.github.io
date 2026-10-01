@@ -12,7 +12,8 @@
       "Developed native device integrations and the EMV payment flow.",
       "Implemented secure terminal configuration and device-to-backend communication.",
       "Built the POS frontend, and ran security and performance tests to find and fix issues."
-    ]
+    ],
+    "order": 1
   },
   {
     "id": "happyliving",
@@ -27,7 +28,8 @@
       "Migrated the backend from .NET to Go microservices and integrated an AI chatbot for reservations.",
       "Run the whole platform on our own VPS: Docker, Traefik, domains, S3-compatible storage, backups and CI/CD.",
       "Set up Novu, Resend and Expo push notifications, with PostHog for product analytics."
-    ]
+    ],
+    "order": 3
   },
   {
     "id": "impossible-games",
@@ -40,7 +42,8 @@
     "highlights": [
       "Building Car'd, a card-based puzzle game with cars moving on grids.",
       "Self-hosting the studio's tools and services."
-    ]
+    ],
+    "order": 4
   },
   {
     "id": "rebuscate",
@@ -55,7 +58,8 @@
       "Designed the product-matching algorithm and the Python/Go scrapers and crawlers that feed it.",
       "Built AI search on a self-hosted Qdrant database with our own embedding service, covering image, text and combined queries.",
       "Self-host everything on our own VPS, from domains and routing to storage and backups."
-    ]
+    ],
+    "order": 2
   },
   {
     "id": "vert-run",
