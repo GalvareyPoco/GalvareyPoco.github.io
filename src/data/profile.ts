@@ -3,6 +3,7 @@ import type { Lang, Localized } from "../i18n";
 // Language-independent profile info, sourced from the GitHub profile README and LinkedIn.
 export const profile = {
   name: "Galvarey",
+  fullName: "Guillermo Alvarez",
   handle: "GalvareyPoco",
   avatar: "https://avatars.githubusercontent.com/u/61221866",
   // Same photo, self-hosted so the 3D badge can draw it on a canvas. Path is relative to the site root.
@@ -27,6 +28,8 @@ export const profile = {
 
 type ProfileText = {
   title: string;
+  /** Rotating words under the name in the hero. */
+  roles: string[];
   location: string;
   about: string[];
   highlights: { value: string; label: string }[];
@@ -39,6 +42,7 @@ type ProfileText = {
 const text: Localized<ProfileText> = {
   en: {
     title: "Full-Stack Developer",
+    roles: ["Full-Stack Developer", "CTO at Happy Living", "Co-founder of Rebuscate", "Game Developer", "Maker & tinkerer"],
     location: "Asunción, Paraguay · Remote",
     about: [
       "I'm a full-stack developer working remotely from Asunción, Paraguay. I specialize in React Native, EMV payment terminals and video game development, and I enjoy taking products from a blank repo all the way to production.",
@@ -58,6 +62,7 @@ const text: Localized<ProfileText> = {
   },
   es: {
     title: "Desarrollador Full-Stack",
+    roles: ["Desarrollador Full-Stack", "CTO de Happy Living", "Cofundador de Rebuscate", "Desarrollador de videojuegos", "Maker y experimentador"],
     location: "Asunción, Paraguay · Remoto",
     about: [
       "Soy desarrollador full-stack y trabajo de forma remota desde Asunción, Paraguay. Me especializo en React Native, terminales de pago EMV y desarrollo de videojuegos, y disfruto llevar productos desde un repositorio vacío hasta producción.",
@@ -77,6 +82,7 @@ const text: Localized<ProfileText> = {
   },
   fr: {
     title: "Développeur Full-Stack",
+    roles: ["Développeur Full-Stack", "CTO chez Happy Living", "Cofondateur de Rebuscate", "Développeur de jeux vidéo", "Maker et bricoleur"],
     location: "Asunción, Paraguay · En télétravail",
     about: [
       "Je suis développeur full-stack et je travaille à distance depuis Asunción, au Paraguay. Je suis spécialisé en React Native, en terminaux de paiement EMV et en développement de jeux vidéo, et j'aime mener un produit d'un dépôt vide jusqu'à la production.",

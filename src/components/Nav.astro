@@ -9,13 +9,14 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 
 const links = [
-  { href: "#about", label: t("nav.about") },
-  { href: "#awards", label: t("nav.awards") },
-  { href: "#experience", label: t("nav.experience") },
-  { href: "#projects", label: t("nav.projects") },
-  { href: "#skills", label: t("nav.skills") },
-  { href: "#console", label: t("nav.console") },
-  { href: "#contact", label: t("nav.contact") },
+  // `n` matches each section's scene number.
+  { n: "01", href: "#about", label: t("nav.about") },
+  { n: "02", href: "#journey", label: t("nav.journey") },
+  { n: "03", href: "#awards", label: t("nav.awards") },
+  { n: "04", href: "#experience", label: t("nav.experience") },
+  { n: "05", href: "#projects", label: t("nav.projects") },
+  { n: "07", href: "#console", label: t("nav.console") },
+  { n: "08", href: "#contact", label: t("nav.contact") },
 ];
 ---
 
@@ -25,12 +26,12 @@ const links = [
     <a href="#top" class="font-mono text-sm font-semibold text-white">
       <span class="text-accent">~/</span>{profile.handle.toLowerCase()}<span class="animate-pulse text-accent">_</span>
     </a>
-    <ul class="hidden items-center gap-0.5 xl:flex">
+    <ul class="hidden items-center xl:flex">
       {
-        links.map((l, i) => (
+        links.map((l) => (
           <li>
-            <a href={l.href} class="rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white">
-              <span class="font-mono text-xs text-accent">0{i + 1}.</span> {l.label}
+            <a href={l.href} class="rounded-lg px-2.5 py-2 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white">
+              <span class="font-mono text-xs text-accent">{l.n}.</span> {l.label}
             </a>
           </li>
         ))

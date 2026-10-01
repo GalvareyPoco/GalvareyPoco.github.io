@@ -13,19 +13,21 @@ const p = profileText(lang);
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const badge: BadgeInfo = {
-  name: profile.name,
+  name: profile.fullName,
+  handle: profile.name.toLowerCase(),
   role: p.title,
-  location: "ASUNCIÓN · PY",
+  location: "Asunción, Paraguay",
+  status: t("hero.badgeStatus"),
   photo: `${base}/${profile.photo}`,
   id: "#61221866",
   site: Astro.site ? new URL(Astro.site).host : "",
-  back: ["> whoami", "full-stack · cto · game dev", "> stack", "react-native · go · node", "unity · godot · postgres", "> awards", "moonshot '25 · innovandopy '25", "> status", "sipping tereré"],
+  back: ["> whoami", "guillermo alvarez", "full-stack · cto · game dev", "> stack", "react-native · go · node · unity", "> lived_in", "asunción · genève · la granja", "> awards", "moonshot '25 · innovandopy '25", "> status", "sipping tereré"],
   access: "ACCESS: ROOT",
 };
 ---
 
 <section id="top" class="relative overflow-hidden pt-24 pb-12 sm:pt-28 lg:min-h-[100svh] lg:pb-16">
-  <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]"></div>
+  <canvas data-dotgrid aria-hidden="true" class="pointer-events-none absolute inset-0 h-full w-full [mask-image:radial-gradient(ellipse_at_top,black_35%,transparent_80%)]"></canvas>
   <div class="pointer-events-none absolute -top-40 left-1/2 h-[480px] w-[780px] -translate-x-1/2 rounded-full bg-accent/15 blur-[120px]"></div>
 
   <!-- Cinematic HUD -->
@@ -56,22 +58,26 @@ const badge: BadgeInfo = {
         )
       }
       <p class="font-mono text-sm text-slate-400">{t("hero.hi")}</p>
-      <h1 class="mt-2 font-display text-6xl font-bold tracking-tight text-white sm:text-8xl">
-        <span data-scramble>{profile.name}</span><span class="text-accent">.</span>
+      <h1 class="mt-2 font-display text-5xl leading-[0.95] font-bold tracking-tight text-white sm:text-7xl xl:text-8xl">
+        <span data-scramble class="after:text-accent after:content-['.']">{profile.fullName}</span>
       </h1>
-      <p class="mt-4 font-display text-2xl font-medium text-gradient sm:text-3xl">{p.title}</p>
+      <p class="mt-3 font-mono text-sm text-slate-400">
+        aka <span class="text-accent">@{profile.name.toLowerCase()}</span> · 🇵🇾 Asunción, Paraguay
+      </p>
+      <p class="mt-4 h-9 font-display text-2xl font-medium whitespace-nowrap sm:h-10 sm:text-3xl">
+        <span class="text-slate-500">&gt;</span> <span class="inline-block text-gradient" data-rotate={JSON.stringify(p.roles)}>{p.roles[0]}</span><span class="ml-1 inline-block h-6 w-2.5 translate-y-0.5 animate-pulse bg-accent sm:h-7"></span>
+      </p>
       <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
         {t("hero.intro")}
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a href="#projects" class="rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-ink-950 transition hover:brightness-110">
+        <a href="#projects" data-magnet class="rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-ink-950 transition hover:brightness-110">
           {t("hero.cta.work")}
         </a>
-        <a href="#awards" class="rounded-xl border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/5">
+        <a href="#awards" data-magnet class="rounded-xl border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/5">
           🏆 {t("hero.cta.awards")}
         </a>
       </div>
-      <p class="mt-8 font-mono text-xs text-slate-500">📍 {p.location}</p>
     </div>
 
     <Lanyard client:visible info={badge} hint={t("hero.badgeHint")} />

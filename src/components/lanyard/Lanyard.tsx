@@ -74,15 +74,22 @@ function StaticBadge({ info }: { info: BadgeInfo }) {
     <div className="relative flex flex-col items-center">
       <div className="h-24 w-6 bg-gradient-to-b from-transparent to-accent/70" />
       <div className="-mt-1 h-4 w-12 rounded-sm bg-slate-300" />
-      <div className="w-56 rotate-[-3deg] rounded-2xl border border-accent/50 bg-ink-900 p-4 shadow-2xl shadow-accent/10 sm:w-64">
-        <div className="mb-3 flex justify-between font-mono text-[10px] text-slate-500">
-          <span className="text-accent">● DEV PASS</span>
-          <span>{info.id}</span>
+      <div data-tilt="12" className="relative w-60 overflow-hidden rounded-3xl border border-accent/40 bg-ink-900 p-4 shadow-2xl shadow-accent/10 sm:w-72">
+        {/* holographic foil */}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_20%,color-mix(in_oklab,var(--color-accent)_25%,transparent)_40%,rgb(167_139_250/0.2)_55%,color-mix(in_oklab,var(--color-accent-2)_25%,transparent)_70%,transparent_85%)] mix-blend-screen" />
+        <p className="relative text-center font-display text-2xl font-bold text-white">{info.name}</p>
+        <p className="relative text-center font-display text-sm text-gradient">{info.role}</p>
+        <img src={info.photo} alt="" width="460" height="460" className="relative mt-3 aspect-[4/4.2] w-full rounded-2xl object-cover ring-1 ring-accent/50" />
+        <div className="relative mt-3 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-2">
+          <img src={info.photo} alt="" width="32" height="32" className="h-8 w-8 rounded-full object-cover ring-2 ring-accent" />
+          <div className="min-w-0 flex-1 font-mono text-[11px]">
+            <p className="text-white">@{info.handle}</p>
+            <p className="text-slate-400">
+              <span className="text-green-400">●</span> {info.status}
+            </p>
+          </div>
+          <span className="rounded-full border border-accent px-2 py-0.5 font-mono text-[10px] text-accent">{info.location}</span>
         </div>
-        <img src={info.photo} alt="" width="460" height="460" className="aspect-[4/5] w-full rounded-xl object-cover ring-2 ring-accent/60" />
-        <p className="mt-3 font-display text-3xl font-bold text-white uppercase">{info.name}</p>
-        <p className="font-display text-sm text-gradient">{info.role}</p>
-        <p className="mt-1 font-mono text-[10px] text-slate-500">{info.location}</p>
       </div>
     </div>
   );

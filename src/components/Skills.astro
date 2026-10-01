@@ -9,20 +9,24 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 // A ticker of headline tools above the grid.
+const ticker2 = ["NestJS", "Supabase", "Tailwind", "Vue.js", "Flutter", "C#", "Solidity", "MongoDB", "Prisma", "AWS", "PostHog", "Raspberry Pi", "Figma", "OpenCV", "PyTorch", "Bambu Lab A1"];
 const ticker = ["React Native", "TypeScript", "Go", "Next.js", "Node.js", "PostgreSQL", "Docker", "Unity", "Godot", "Qdrant", "Python", "Expo", "Traefik", "Blender", "Fusion 360", "Kali Linux"];
 ---
 
 <section id="skills" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
-  <SectionHeading index="05" kicker={t("skills.kicker")} title={t("skills.title")} />
+  <SectionHeading index="06" kicker={t("skills.kicker")} title={t("skills.title")} />
   <div class="marquee reveal mb-10 overflow-hidden border-y border-white/5 py-4" aria-hidden="true">
     <div class="marquee-track flex w-max gap-10 font-display text-2xl font-bold text-white/25 sm:text-3xl">
       {[...ticker, ...ticker].map((s) => <span class="whitespace-nowrap transition hover:text-accent">{s} <span class="text-accent/50">✦</span></span>)}
+    </div>
+    <div class="marquee-track reverse mt-3 flex w-max gap-8 font-mono text-sm text-white/20">
+      {[...ticker2, ...ticker2].map((s) => <span class="whitespace-nowrap transition hover:text-accent-2">{s} <span class="text-accent-2/50">//</span></span>)}
     </div>
   </div>
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {
       skillGroups(lang).map((g) => (
-        <div class="reveal spotlight card p-5 transition hover:border-accent/30">
+        <div class="reveal spotlight card p-5 transition hover:border-accent/30" data-tilt="6">
           <p class="mb-4 font-mono text-xs uppercase tracking-widest text-accent">{g.name}</p>
           <ul class="flex flex-wrap gap-1.5">
             {g.items.map((s) => (

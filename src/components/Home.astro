@@ -8,6 +8,7 @@ import Projects from "./Projects.astro";
 import Skills from "./Skills.astro";
 import Awards from "./Awards.astro";
 import Console from "./Console.astro";
+import JourneySection from "./JourneySection.astro";
 import Contact from "./Contact.astro";
 import type { Lang } from "../i18n";
 
@@ -22,6 +23,7 @@ const { lang } = Astro.props;
   <main>
     <Hero lang={lang} />
     <About lang={lang} />
+    <JourneySection lang={lang} />
     <Awards lang={lang} />
     <Experience lang={lang} />
     <Projects lang={lang} />

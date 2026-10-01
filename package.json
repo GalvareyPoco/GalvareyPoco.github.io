@@ -20,6 +20,7 @@
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
     "astro": "^7.3.5",
+    "cobe": "^2.0.1",
     "meshline": "^3.3.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

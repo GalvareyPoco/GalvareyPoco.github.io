@@ -17,9 +17,9 @@ const last = profile.ventures.length - 1;
   <dl class="reveal mb-12 grid gap-4 sm:grid-cols-3">
     {
       p.highlights.map((h) => (
-        <div class="spotlight card p-5">
+        <div class="spotlight card p-5" data-tilt="8">
           <dt class="sr-only">{h.label}</dt>
-          <dd class="font-display text-4xl font-bold text-gradient">{h.value}</dd>
+          <dd class="font-display text-4xl font-bold text-gradient" data-count={h.value}>{h.value}</dd>
           <dd class="mt-1 text-sm text-slate-400">{h.label}</dd>
         </div>
       ))
@@ -27,7 +27,7 @@ const last = profile.ventures.length - 1;
   </dl>
   <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
     <div class="reveal space-y-5 text-lg leading-relaxed text-slate-400">
-      {p.about.map((para) => <p>{para}</p>)}
+      {p.about.map((para) => <p data-words>{para}</p>)}
       <p class="pt-2 text-base">
         {t("about.wizard")}{" "}
         {
