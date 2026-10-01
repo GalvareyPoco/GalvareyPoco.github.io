@@ -1,31 +1,35 @@
 ---
 import "../styles/global.css";
-import { profile } from "../data/profile";
+import { profile, profileText } from "../data/profile";
+import { type Lang, langs, defaultLang, homePath, useTranslations } from "../i18n";
 
 interface Props {
-  title?: string;
-  description?: string;
+  lang: Lang;
 }
 
-const {
-  title = `${profile.name} · ${profile.title}`,
-  description = `${profile.name} is a ${profile.title.toLowerCase()} based in ${profile.location}. ${profile.tagline}`,
-} = Astro.props;
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const title = `${profile.name} · ${profileText(lang).title}`;
+const description = t("meta.description");
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogLocale = { en: "en_US", es: "es_PY", fr: "fr_FR" }[lang];
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {langs.map((l) => <link rel="alternate" hreflang={l} href={new URL(homePath(l), Astro.site)} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(homePath(defaultLang), Astro.site)} />
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
     <meta name="theme-color" content="#07090f" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={ogLocale} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />

@@ -2,24 +2,35 @@ import { useEffect, useState } from "react";
 
 type Step = { cmd: string; out: string[] };
 
-const SCRIPT: Step[] = [
-  { cmd: "whoami", out: ["galvarey · full-stack developer · asunción, py"] },
-  {
-    cmd: "cat focus.txt",
-    out: ["react-native  emv/pos  unity/godot", "go  node  postgres  docker"],
-  },
-  {
-    cmd: "ls ~/projects",
-    out: ["rebuscate/  happy-living/  vert-run/", "tacumbu-finder/  ettios-game/  card/"],
-  },
-  { cmd: "ls ~/workshop", out: ["bambu-a1/  ender-5-plus/  halot-one/", "fusion360/  blender/  electronics/"] },
-  { cmd: "echo $FUN_FACT", out: ["i like turtles 🐢"] },
-];
+const SCRIPTS: Record<"en" | "es" | "fr", Step[]> = {
+  en: [
+    { cmd: "whoami", out: ["galvarey · full-stack developer · asunción, py"] },
+    { cmd: "cat focus.txt", out: ["react-native  emv/pos  unity/godot", "go  node  postgres  docker"] },
+    { cmd: "ls ~/projects", out: ["rebuscate/  happy-living/  vert-run/", "tacumbu-finder/  ettios-game/  card/"] },
+    { cmd: "ls ~/workshop", out: ["bambu-a1/  ender-5-plus/  halot-one/", "fusion360/  blender/  electronics/"] },
+    { cmd: "echo $FUN_FACT", out: ["i like turtles 🐢"] },
+  ],
+  es: [
+    { cmd: "whoami", out: ["galvarey · desarrollador full-stack · asunción, py"] },
+    { cmd: "cat enfoque.txt", out: ["react-native  emv/pos  unity/godot", "go  node  postgres  docker"] },
+    { cmd: "ls ~/proyectos", out: ["rebuscate/  happy-living/  vert-run/", "tacumbu-finder/  ettios-game/  card/"] },
+    { cmd: "ls ~/taller", out: ["bambu-a1/  ender-5-plus/  halot-one/", "fusion360/  blender/  electronica/"] },
+    { cmd: "echo $DATO_CURIOSO", out: ["me gustan las tortugas 🐢"] },
+  ],
+  fr: [
+    { cmd: "whoami", out: ["galvarey · développeur full-stack · asunción, py"] },
+    { cmd: "cat domaines.txt", out: ["react-native  emv/pos  unity/godot", "go  node  postgres  docker"] },
+    { cmd: "ls ~/projets", out: ["rebuscate/  happy-living/  vert-run/", "tacumbu-finder/  ettios-game/  card/"] },
+    { cmd: "ls ~/atelier", out: ["bambu-a1/  ender-5-plus/  halot-one/", "fusion360/  blender/  electronique/"] },
+    { cmd: "echo $ANECDOTE", out: ["j'adore les tortues 🐢"] },
+  ],
+};
 
 const TYPE_MS = 55;
 const PAUSE_MS = 900;
 
-export default function Terminal() {
+export default function Terminal({ lang, label }: { lang: "en" | "es" | "fr"; label: string }) {
+  const SCRIPT = SCRIPTS[lang];
   const [lines, setLines] = useState<{ kind: "cmd" | "out"; text: string }[]>([]);
   const [typing, setTyping] = useState("");
 
@@ -55,7 +66,7 @@ export default function Terminal() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [SCRIPT]);
 
   return (
     <div className="relative">
@@ -67,7 +78,7 @@ export default function Terminal() {
           <span className="h-3 w-3 rounded-full bg-green-400/80" />
           <span className="ml-3 font-mono text-xs text-slate-500">galvarey@dev: ~</span>
         </div>
-        <div className="h-[380px] p-5 font-mono text-[13px] leading-relaxed sm:text-sm" aria-label="Animated terminal introduction" role="img">
+        <div className="h-[380px] p-5 font-mono text-[13px] leading-relaxed sm:text-sm" aria-label={label} role="img">
           {lines.map((l, i) =>
             l.kind === "cmd" ? (
               <p key={i} className="text-white">

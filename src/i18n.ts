@@ -1,0 +1,187 @@
+// Languages, UI strings and helpers shared by every page.
+export const languages = { en: "English", es: "Español", fr: "Français" } as const;
+export type Lang = keyof typeof languages;
+export const langs = Object.keys(languages) as Lang[];
+export const defaultLang: Lang = "en";
+
+/** A piece of text in every supported language. */
+export type Localized<T = string> = Record<Lang, T>;
+
+/** Path of the home page in a given language ("/", "/es/", "/fr/"). */
+export function homePath(lang: Lang): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+  return lang === defaultLang ? `${base}/` : `${base}/${lang}/`;
+}
+
+/** "2025-03" -> "Mar 2025" / "mar 2025" / "mars 2025"; "2014" stays "2014". */
+export function formatMonth(value: string | undefined, lang: Lang): string | undefined {
+  if (!value) return undefined;
+  const m = /^(\d{4})-(\d{2})$/.exec(value);
+  if (!m) return value;
+  const date = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, 1));
+  return new Intl.DateTimeFormat(lang, { month: "short", year: "numeric", timeZone: "UTC" }).format(date);
+}
+
+export const ui = {
+  en: {
+    "meta.description": "Galvarey is a full-stack developer based in Asunción, Paraguay. Mobile, payments, games and self-hosted infrastructure.",
+    "nav.about": "About",
+    "nav.experience": "Experience",
+    "nav.projects": "Projects",
+    "nav.skills": "Skills",
+    "nav.contact": "Contact",
+    "nav.language": "Language",
+    "hero.available": "Open to freelance work",
+    "hero.hi": "Hi, I'm",
+    "hero.intro": "I build mobile apps, POS payment software and games, and run the backends behind them. I like shipping real products end to end, from the first commit to the app store.",
+    "hero.cta.work": "See my work",
+    "hero.cta.contact": "Get in touch",
+    "hero.terminalLabel": "Animated terminal introduction",
+    "about.kicker": "about me",
+    "about.title": "Developer, builder, occasional game maker.",
+    "about.wizard": "Code wizard at",
+    "about.and": "and",
+    "about.focus": "Focus",
+    "about.languages": "Languages",
+    "about.learning": "Currently learning",
+    "about.avatarAlt": "Galvarey's avatar",
+    "experience.kicker": "where I've worked",
+    "experience.title": "Experience",
+    "experience.present": "Present",
+    "experience.comingSoon": "coming soon",
+    "experience.earlier": "Earlier",
+    "experience.education": "Education",
+    "projects.kicker": "things I've built",
+    "projects.title": "Selected projects",
+    "projects.all": "All",
+    "projects.filter": "Filter projects",
+    "projects.more": "+ what I did",
+    "projects.less": "− less",
+    "projects.with": "with",
+    "category.Product": "Product",
+    "category.Client": "Client",
+    "category.Open source": "Open source",
+    "category.Game": "Game",
+    "skills.kicker": "toolbox",
+    "skills.title": "Skills & technologies",
+    "skills.os": "Daily drivers",
+    "contact.kicker": "what's next?",
+    "contact.title": "Let's build something.",
+    "contact.body": "I'm always open to questions, freelance projects and interesting problems, especially in mobile, payments or games. The fastest way to reach me is LinkedIn.",
+    "contact.linkedin": "Message me on LinkedIn",
+    "contact.email": "Email me",
+    "footer.built": "Built with Astro, React & Tailwind",
+  },
+  es: {
+    "meta.description": "Galvarey es un desarrollador full-stack en Asunción, Paraguay. Apps móviles, pagos, videojuegos e infraestructura propia.",
+    "nav.about": "Sobre mí",
+    "nav.experience": "Experiencia",
+    "nav.projects": "Proyectos",
+    "nav.skills": "Habilidades",
+    "nav.contact": "Contacto",
+    "nav.language": "Idioma",
+    "hero.available": "Disponible para proyectos freelance",
+    "hero.hi": "Hola, soy",
+    "hero.intro": "Construyo apps móviles, software de pagos para POS y videojuegos, y opero los backends que los sostienen. Me gusta llevar productos reales de punta a punta, desde el primer commit hasta la tienda de apps.",
+    "hero.cta.work": "Ver mi trabajo",
+    "hero.cta.contact": "Contactame",
+    "hero.terminalLabel": "Presentación animada en una terminal",
+    "about.kicker": "sobre mí",
+    "about.title": "Desarrollador, constructor y creador de videojuegos.",
+    "about.wizard": "Mago del código en",
+    "about.and": "y",
+    "about.focus": "Enfoque",
+    "about.languages": "Idiomas",
+    "about.learning": "Aprendiendo ahora",
+    "about.avatarAlt": "Avatar de Galvarey",
+    "experience.kicker": "dónde trabajé",
+    "experience.title": "Experiencia",
+    "experience.present": "Actualidad",
+    "experience.comingSoon": "próximamente",
+    "experience.earlier": "Anteriormente",
+    "experience.education": "Formación",
+    "projects.kicker": "lo que construí",
+    "projects.title": "Proyectos destacados",
+    "projects.all": "Todos",
+    "projects.filter": "Filtrar proyectos",
+    "projects.more": "+ qué hice",
+    "projects.less": "− menos",
+    "projects.with": "con",
+    "category.Product": "Producto",
+    "category.Client": "Cliente",
+    "category.Open source": "Código abierto",
+    "category.Game": "Videojuego",
+    "skills.kicker": "herramientas",
+    "skills.title": "Habilidades y tecnologías",
+    "skills.os": "Uso a diario",
+    "contact.kicker": "¿qué sigue?",
+    "contact.title": "Construyamos algo.",
+    "contact.body": "Siempre estoy abierto a preguntas, proyectos freelance y problemas interesantes, sobre todo en mobile, pagos o videojuegos. La forma más rápida de contactarme es por LinkedIn.",
+    "contact.linkedin": "Escribime por LinkedIn",
+    "contact.email": "Enviame un email",
+    "footer.built": "Hecho con Astro, React y Tailwind",
+  },
+  fr: {
+    "meta.description": "Galvarey est un développeur full-stack basé à Asunción, au Paraguay. Mobile, paiements, jeux vidéo et infrastructure auto-hébergée.",
+    "nav.about": "À propos",
+    "nav.experience": "Expérience",
+    "nav.projects": "Projets",
+    "nav.skills": "Compétences",
+    "nav.contact": "Contact",
+    "nav.language": "Langue",
+    "hero.available": "Disponible pour des missions freelance",
+    "hero.hi": "Bonjour, je suis",
+    "hero.intro": "Je développe des applications mobiles, des logiciels de paiement pour terminaux POS et des jeux vidéo, et je gère les backends qui les font tourner. J'aime livrer de vrais produits de bout en bout, du premier commit jusqu'à l'App Store.",
+    "hero.cta.work": "Voir mon travail",
+    "hero.cta.contact": "Me contacter",
+    "hero.terminalLabel": "Présentation animée dans un terminal",
+    "about.kicker": "à propos",
+    "about.title": "Développeur, bâtisseur et créateur de jeux à mes heures.",
+    "about.wizard": "Magicien du code chez",
+    "about.and": "et",
+    "about.focus": "Domaines",
+    "about.languages": "Langues",
+    "about.learning": "En cours d'apprentissage",
+    "about.avatarAlt": "Avatar de Galvarey",
+    "experience.kicker": "mon parcours",
+    "experience.title": "Expérience",
+    "experience.present": "Aujourd'hui",
+    "experience.comingSoon": "bientôt",
+    "experience.earlier": "Auparavant",
+    "experience.education": "Formation",
+    "projects.kicker": "ce que j'ai construit",
+    "projects.title": "Projets choisis",
+    "projects.all": "Tous",
+    "projects.filter": "Filtrer les projets",
+    "projects.more": "+ ce que j'ai fait",
+    "projects.less": "− moins",
+    "projects.with": "avec",
+    "category.Product": "Produit",
+    "category.Client": "Client",
+    "category.Open source": "Open source",
+    "category.Game": "Jeu vidéo",
+    "skills.kicker": "boîte à outils",
+    "skills.title": "Compétences et technologies",
+    "skills.os": "Au quotidien",
+    "contact.kicker": "et maintenant ?",
+    "contact.title": "Construisons quelque chose.",
+    "contact.body": "Je suis toujours ouvert aux questions, aux missions freelance et aux problèmes intéressants, surtout dans le mobile, les paiements ou le jeu vidéo. Le plus rapide pour me joindre, c'est LinkedIn.",
+    "contact.linkedin": "M'écrire sur LinkedIn",
+    "contact.email": "M'envoyer un e-mail",
+    "footer.built": "Réalisé avec Astro, React et Tailwind",
+  },
+} as const satisfies Record<Lang, Record<string, string>>;
+
+export type UiKey = keyof (typeof ui)["en"];
+
+export function useTranslations(lang: Lang) {
+  return (key: UiKey): string => ui[lang][key] ?? ui[defaultLang][key];
+}
+
+/** Text that is either the same in every language or given per language. */
+export function pick<T>(value: T | Localized<T>, lang: Lang): T {
+  if (value && typeof value === "object" && !Array.isArray(value) && "en" in (value as object)) {
+    return (value as Localized<T>)[lang];
+  }
+  return value as T;
+}

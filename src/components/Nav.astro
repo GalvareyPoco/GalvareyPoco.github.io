@@ -1,21 +1,28 @@
 ---
 import { profile } from "../data/profile";
+import { type Lang, langs, languages, homePath, useTranslations } from "../i18n";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 
 const links = [
-  { href: "#about", label: "About" },
-  { href: "#experience", label: "Experience" },
-  { href: "#projects", label: "Projects" },
-  { href: "#skills", label: "Skills" },
-  { href: "#contact", label: "Contact" },
+  { href: "#about", label: t("nav.about") },
+  { href: "#experience", label: t("nav.experience") },
+  { href: "#projects", label: t("nav.projects") },
+  { href: "#skills", label: t("nav.skills") },
+  { href: "#contact", label: t("nav.contact") },
 ];
 ---
 
 <header class="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink-950/70 backdrop-blur-md">
-  <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+  <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
     <a href="#top" class="font-mono text-sm font-semibold text-white">
       <span class="text-accent">~/</span>{profile.handle.toLowerCase()}<span class="animate-pulse text-accent">_</span>
     </a>
-    <ul class="hidden items-center gap-1 md:flex">
+    <ul class="hidden items-center gap-1 lg:flex">
       {
         links.map((l, i) => (
           <li>
@@ -26,13 +33,26 @@ const links = [
         ))
       }
     </ul>
-    <a
-      href={profile.socials[1].url}
-      target="_blank"
-      rel="noopener"
-      class="rounded-lg border border-accent/40 px-3 py-1.5 font-mono text-xs text-accent transition hover:bg-accent/10"
-    >
-      LinkedIn ↗
-    </a>
+    <ul class="flex items-center rounded-lg border border-white/10 p-0.5 font-mono text-xs" aria-label={t("nav.language")}>
+      {
+        langs.map((l) => (
+          <li>
+            <a
+              href={homePath(l)}
+              hreflang={l}
+              lang={l}
+              title={languages[l]}
+              aria-current={l === lang ? "page" : undefined}
+              class:list={[
+                "block rounded-md px-2 py-1 uppercase transition",
+                l === lang ? "bg-accent text-ink-950" : "text-slate-400 hover:text-white",
+              ]}
+            >
+              {l}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </nav>
 </header>

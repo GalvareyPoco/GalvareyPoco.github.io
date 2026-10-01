@@ -1,29 +1,35 @@
 ---
 import { getCollection } from "astro:content";
+import { type Lang, formatMonth, pick, useTranslations } from "../i18n";
 import SectionHeading from "./SectionHeading.astro";
 
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
 // Collections don't keep file order, so sort explicitly: manual `order` first, then current roles, then newest start date.
-const startTime = (d?: string) => (d ? Date.parse(`1 ${d}`) || Date.parse(d) || 0 : 0);
 const experience = (await getCollection("experience"))
   .map((e) => e.data)
   .sort(
     (a, b) =>
       (a.order ?? Infinity) - (b.order ?? Infinity) ||
       Number(b.current) - Number(a.current) ||
-      startTime(b.start) - startTime(a.start),
+      (b.start ?? "").localeCompare(a.start ?? ""),
   );
 // Roles with highlights get full timeline cards; the rest are listed compactly under "Earlier".
-const featured = experience.filter((e) => e.highlights.length > 0 || e.placeholder);
-const earlier = experience.filter((e) => e.highlights.length === 0 && !e.placeholder);
+const featured = experience.filter((e) => e.highlights);
+const earlier = experience.filter((e) => !e.highlights);
 const range = (e: { start?: string; end?: string; current: boolean }) =>
-  [e.start, e.current ? "Present" : e.end].filter(Boolean).join(" – ");
+  [formatMonth(e.start, lang), e.current ? t("experience.present") : formatMonth(e.end, lang)].filter(Boolean).join(" – ");
 const education = (await getCollection("education"))
   .map((e) => e.data)
   .sort((a, b) => Number(b.end ?? 0) - Number(a.end ?? 0));
 ---
 
 <section id="experience" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
-  <SectionHeading index="02" kicker="where I've worked" title="Experience" />
+  <SectionHeading index="02" kicker={t("experience.kicker")} title={t("experience.title")} />
 
   <ol class="relative space-y-8 border-l border-white/10 pl-8">
     {
@@ -35,10 +41,10 @@ const education = (await getCollection("education"))
               job.current ? "border-accent bg-accent/30 shadow-[0_0_16px] shadow-accent/60" : "border-ink-600 bg-ink-900",
             ]}
           />
-          <article class:list={["card p-6", job.placeholder && "border-dashed opacity-70"]}>
+          <article class="card p-6">
             <div class="flex flex-wrap items-baseline justify-between gap-2">
               <h3 class="font-display text-xl font-bold text-white">
-                {job.role}{" "}
+                {pick(job.role, lang)}{" "}
                 <span class="text-accent">
                   @{" "}
                   {job.companyUrl ? (
@@ -50,17 +56,13 @@ const education = (await getCollection("education"))
                   )}
                 </span>
               </h3>
-              {job.placeholder ? (
-                <span class="rounded-full border border-dashed border-white/20 px-2.5 py-0.5 font-mono text-xs text-slate-500">coming soon</span>
-              ) : (
-                <span class="font-mono text-xs text-slate-500">
-                  {range(job)}
-                  {job.location && ` · ${job.location}`}
-                </span>
-              )}
+              <span class="font-mono text-xs text-slate-500">
+                {range(job)}
+                {job.location && ` · ${job.location}`}
+              </span>
             </div>
             <ul class="mt-4 space-y-2 text-slate-400">
-              {job.highlights.map((h) => (
+              {job.highlights?.[lang].map((h) => (
                 <li class="flex gap-3">
                   <span class="mt-1 text-accent">▹</span>
                   <span>{h}</span>
@@ -76,12 +78,12 @@ const education = (await getCollection("education"))
   {
     earlier.length > 0 && (
       <div class="reveal mt-10 pl-8">
-        <p class="mb-3 font-mono text-xs uppercase tracking-widest text-slate-500">Earlier</p>
+        <p class="mb-3 font-mono text-xs uppercase tracking-widest text-slate-500">{t("experience.earlier")}</p>
         <ul class="divide-y divide-white/5 rounded-2xl border border-white/8 bg-ink-900/40">
           {earlier.map((job) => (
             <li class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-3">
               <span class="text-slate-300">
-                <span class="font-medium text-white">{job.role}</span> <span class="text-slate-500">@</span> {job.company}
+                <span class="font-medium text-white">{pick(job.role, lang)}</span> <span class="text-slate-500">@</span> {job.company}
               </span>
               <span class="font-mono text-xs text-slate-500">{range(job)}</span>
             </li>
@@ -91,15 +93,14 @@ const education = (await getCollection("education"))
     )
   }
 
-  <h3 class="reveal mt-16 mb-6 font-display text-2xl font-bold text-white">Education</h3>
+  <h3 class="reveal mt-16 mb-6 font-display text-2xl font-bold text-white">{t("experience.education")}</h3>
   <div class="grid gap-4 sm:grid-cols-2">
     {
       education.map((ed) => (
-        <article class:list={["reveal card p-6", ed.placeholder && "border-dashed opacity-70"]}>
-          <p class="font-display text-lg font-bold text-white">{ed.degree}</p>
+        <article class="reveal card p-6">
+          <p class="font-display text-lg font-bold text-white">{pick(ed.degree, lang)}</p>
           <p class="text-accent">{ed.school}</p>
           {(ed.start || ed.end) && <p class="mt-1 font-mono text-xs text-slate-500">{[ed.start, ed.end].filter(Boolean).join(" – ")}</p>}
-          {ed.notes && <p class="mt-3 text-sm text-slate-400">{ed.notes}</p>}
         </article>
       ))
     }

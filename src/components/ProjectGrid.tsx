@@ -5,6 +5,7 @@ export type ProjectCard = {
   title: string;
   summary: string;
   category: string;
+  categoryLabel: string;
   platforms: string[];
   stack: string[];
   url?: string;
@@ -14,9 +15,13 @@ export type ProjectCard = {
   highlights: string[];
 };
 
-const ALL = "All";
+export type ProjectGridLabels = { all: string; filter: string; more: string; less: string; with: string };
 
-export default function ProjectGrid({ projects }: { projects: ProjectCard[] }) {
+const ALL = "__all__";
+
+export default function ProjectGrid({ projects, labels }: { projects: ProjectCard[]; labels: ProjectGridLabels }) {
+  const labelFor = (category: string) =>
+    category === ALL ? labels.all : (projects.find((p) => p.category === category)?.categoryLabel ?? category);
   const categories = useMemo(() => [ALL, ...Array.from(new Set(projects.map((p) => p.category)))], [projects]);
   const [active, setActive] = useState(ALL);
   const [open, setOpen] = useState<string | null>(null);
@@ -24,7 +29,7 @@ export default function ProjectGrid({ projects }: { projects: ProjectCard[] }) {
 
   return (
     <div>
-      <div className="mb-8 flex flex-wrap gap-2" role="tablist" aria-label="Filter projects">
+      <div className="mb-8 flex flex-wrap gap-2" role="tablist" aria-label={labels.filter}>
         {categories.map((c) => (
           <button
             key={c}
@@ -37,7 +42,7 @@ export default function ProjectGrid({ projects }: { projects: ProjectCard[] }) {
                 : "border-white/10 text-slate-400 hover:border-white/30 hover:text-white"
             }`}
           >
-            {c}
+            {labelFor(c)}
             <span className="ml-1.5 opacity-60">
               {c === ALL ? projects.length : projects.filter((p) => p.category === c).length}
             </span>
@@ -58,7 +63,7 @@ export default function ProjectGrid({ projects }: { projects: ProjectCard[] }) {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-mono text-xs text-accent">
-                    {p.category}
+                    {p.categoryLabel}
                     {p.platforms.length > 0 && <span className="text-slate-500"> · {p.platforms.join(" / ")}</span>}
                   </p>
                   <h3 className="mt-1 font-display text-2xl font-bold text-white">
@@ -105,7 +110,7 @@ export default function ProjectGrid({ projects }: { projects: ProjectCard[] }) {
                   aria-expanded={expanded}
                   className="font-mono text-accent hover:underline"
                 >
-                  {expanded ? "− less" : "+ what I did"}
+                  {expanded ? labels.less : labels.more}
                 </button>
                 {p.links.map((l) => (
                   <a key={l.url} href={l.url} target="_blank" rel="noopener" className="text-slate-400 hover:text-white">
@@ -114,7 +119,7 @@ export default function ProjectGrid({ projects }: { projects: ProjectCard[] }) {
                 ))}
                 {p.collaborators.length > 0 && (
                   <span className="text-slate-500">
-                    with{" "}
+                    {labels.with}{" "}
                     {p.collaborators.map((c, i) => (
                       <span key={c.label}>
                         {c.url ? (

@@ -1,40 +1,41 @@
 import { defineCollection } from "astro:content";
-import { glob, file } from "astro/loaders";
+import { file } from "astro/loaders";
 import { z } from "astro/zod";
 
-const link = z.object({ label: z.string(), url: z.string() });
+// Text given once for all languages, or per language.
+const localized = <T extends z.ZodType>(t: T) => z.object({ en: t, es: t, fr: t });
+const text = z.union([z.string(), localized(z.string())]);
+const textList = localized(z.array(z.string()));
 
-// One Markdown file per project in src/content/projects/.
-// Body = bullet list of highlights; frontmatter = card metadata.
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
+  loader: file("./src/content/projects.json"),
   schema: z.object({
-    title: z.string(),
-    summary: z.string(),
+    title: text,
+    summary: localized(z.string()),
+    highlights: textList,
     order: z.number(),
     category: z.enum(["Product", "Client", "Open source", "Game"]),
     platforms: z.array(z.string()).default([]),
     stack: z.array(z.string()).default([]),
     url: z.string().optional(),
-    links: z.array(link).default([]),
+    links: z.array(z.object({ label: text, url: z.string() })).default([]),
     collaborators: z.array(z.object({ label: z.string(), url: z.string().optional() })).default([]),
     featured: z.boolean().default(false),
   }),
 });
 
-// Roles from LinkedIn. Entries with `placeholder: true` render as "coming soon" cards.
+// Dates are "YYYY-MM" and get formatted per language. Roles with highlights get full timeline cards.
 const experience = defineCollection({
   loader: file("./src/content/experience.json"),
   schema: z.object({
-    role: z.string(),
+    role: text,
     company: z.string(),
     companyUrl: z.string().optional(),
     location: z.string().optional(),
     start: z.string().optional(),
     end: z.string().optional(),
     current: z.boolean().default(false),
-    highlights: z.array(z.string()).default([]),
-    placeholder: z.boolean().default(false),
+    highlights: textList.optional(),
     // Optional manual position; lower comes first. Unset roles sort by date after these.
     order: z.number().optional(),
   }),
@@ -44,11 +45,9 @@ const education = defineCollection({
   loader: file("./src/content/education.json"),
   schema: z.object({
     school: z.string(),
-    degree: z.string(),
+    degree: text,
     start: z.string().optional(),
     end: z.string().optional(),
-    notes: z.string().optional(),
-    placeholder: z.boolean().default(false),
   }),
 });
 

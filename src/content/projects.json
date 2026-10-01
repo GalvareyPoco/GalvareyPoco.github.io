@@ -1,0 +1,351 @@
+[
+  {
+    "id": "rebuscate",
+    "title": "Rebuscate",
+    "order": 1,
+    "category": "Product",
+    "featured": true,
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "stack": [
+      "React Native",
+      "Next.js",
+      "PostgreSQL",
+      "Qdrant",
+      "Embeddings",
+      "Python",
+      "Go",
+      "Docker",
+      "PostHog"
+    ],
+    "url": "https://rebuscate.com",
+    "collaborators": [
+      {
+        "label": "Abel Franco",
+        "url": "https://afranval.github.io"
+      }
+    ],
+    "summary": {
+      "en": "Price comparison platform for local supermarkets, pharmacies and other stores in Paraguay, with AI-powered product matching and search, all running on our own infrastructure.",
+      "es": "Plataforma de comparación de precios para supermercados, farmacias y otros comercios de Paraguay, con matching y búsqueda de productos impulsados por IA, todo sobre infraestructura propia.",
+      "fr": "Plateforme de comparaison de prix pour les supermarchés, pharmacies et autres commerces du Paraguay, avec rapprochement et recherche de produits par IA, le tout sur notre propre infrastructure."
+    },
+    "highlights": {
+      "en": [
+        "Built the mobile app in React Native and the website in Next.js.",
+        "Designed a product-relation algorithm that matches the same product across stores to improve search accuracy.",
+        "Run a self-hosted Qdrant vector database with our own embedding service that embeds every product.",
+        "Built image, text and combined image-and-text retrieval on those embeddings, plus AI-driven product comparisons.",
+        "Wrote the scrapers and crawlers in Python and Go that keep prices up to date.",
+        "Implemented the backend in PostgreSQL with edge functions, with product analytics in PostHog.",
+        "Deployed everything on our own VPS: domains, routing, hosting, S3-compatible storage and backups."
+      ],
+      "es": [
+        "Desarrollé la app móvil en React Native y el sitio web en Next.js.",
+        "Diseñé un algoritmo de relación de productos que identifica el mismo producto en distintos comercios para mejorar la precisión de búsqueda.",
+        "Operamos una base vectorial Qdrant autoalojada con nuestro propio servicio de embeddings para cada producto.",
+        "Construí búsqueda por imagen, por texto o combinada sobre esos embeddings, además de comparaciones de productos con IA.",
+        "Escribí en Python y Go los scrapers y crawlers que mantienen los precios actualizados.",
+        "Implementé el backend en PostgreSQL con edge functions, y analítica de producto con PostHog.",
+        "Desplegamos todo en nuestro propio VPS: dominios, ruteo, hosting, almacenamiento compatible con S3 y backups."
+      ],
+      "fr": [
+        "Développement de l'application mobile en React Native et du site web en Next.js.",
+        "Conception d'un algorithme qui reconnaît le même produit d'un magasin à l'autre pour une recherche plus précise.",
+        "Base vectorielle Qdrant auto-hébergée avec notre propre service d'embeddings pour chaque produit.",
+        "Recherche par image, par texte ou combinée sur ces embeddings, et comparaisons de produits par IA.",
+        "Écriture en Python et Go des scrapers et crawlers qui tiennent les prix à jour.",
+        "Backend PostgreSQL avec des edge functions, et analytique produit avec PostHog.",
+        "Tout est déployé sur notre propre VPS : domaines, routage, hébergement, stockage compatible S3 et sauvegardes."
+      ]
+    }
+  },
+  {
+    "id": "happy-living",
+    "title": "Happy Living",
+    "order": 2,
+    "category": "Product",
+    "featured": true,
+    "platforms": [
+      "iOS",
+      "Android"
+    ],
+    "stack": [
+      "React Native",
+      "Go",
+      "Microservices",
+      "Docker",
+      "Traefik",
+      "Novu",
+      "Resend",
+      "Expo Notifications",
+      "PostHog",
+      "CI/CD"
+    ],
+    "url": "https://happyliving.lat",
+    "summary": {
+      "en": "Building-management app for residents and administrators, with an AI assistant for reservations, backed by self-hosted Go microservices.",
+      "es": "App de administración de edificios para residentes y administradores, con un asistente de IA para reservas y microservicios en Go autoalojados.",
+      "fr": "Application de gestion d'immeubles pour résidents et syndics, avec un assistant IA pour les réservations et des microservices Go auto-hébergés."
+    },
+    "highlights": {
+      "en": [
+        "Developing the React Native app and shipping new building-management features.",
+        "Migrated the backend from .NET to Go and split it into microservices.",
+        "Integrated an AI chatbot for reservations and user acquisition.",
+        "Set up notifications end to end: Novu for orchestration, Resend for email and Expo for push to the native app.",
+        "Track product events with PostHog.",
+        "Self-host every service on our own VPS with Docker and Traefik, including domains, routing, S3-compatible storage, backups and CI/CD."
+      ],
+      "es": [
+        "Desarrollo la app en React Native y lanzo nuevas funcionalidades de administración de edificios.",
+        "Migré el backend de .NET a Go y lo dividí en microservicios.",
+        "Integré un chatbot con IA para reservas y captación de usuarios.",
+        "Configuré las notificaciones de punta a punta: Novu para la orquestación, Resend para email y Expo para push en la app nativa.",
+        "Medimos los eventos de producto con PostHog.",
+        "Autoalojamos cada servicio en nuestro propio VPS con Docker y Traefik, incluyendo dominios, ruteo, almacenamiento compatible con S3, backups y CI/CD."
+      ],
+      "fr": [
+        "Développement de l'application React Native et de nouvelles fonctionnalités de gestion d'immeubles.",
+        "Migration du backend de .NET vers Go, découpé en microservices.",
+        "Intégration d'un chatbot IA pour les réservations et l'acquisition d'utilisateurs.",
+        "Notifications de bout en bout : Novu pour l'orchestration, Resend pour l'e-mail et Expo pour le push dans l'application native.",
+        "Suivi des événements produit avec PostHog.",
+        "Chaque service est auto-hébergé sur notre propre VPS avec Docker et Traefik : domaines, routage, stockage compatible S3, sauvegardes et CI/CD."
+      ]
+    }
+  },
+  {
+    "id": "vert-run",
+    "title": "Vert.run",
+    "order": 3,
+    "category": "Client",
+    "featured": true,
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "stack": [
+      "React Native",
+      "AWS Lambda",
+      "DynamoDB",
+      "Cognito",
+      "Bedrock",
+      "CI/CD"
+    ],
+    "url": "https://vert.run",
+    "summary": {
+      "en": "Training platform for trail and mountain runners. Mobile rewrite and AWS-powered AI features.",
+      "es": "Plataforma de entrenamiento para corredores de trail y montaña. Reescritura mobile y funcionalidades de IA sobre AWS.",
+      "fr": "Plateforme d'entraînement pour les coureurs de trail et de montagne. Réécriture mobile et fonctionnalités IA sur AWS."
+    },
+    "highlights": {
+      "en": [
+        "Migrated the entire mobile platform to React Native.",
+        "Refactored the website to pay down technical debt.",
+        "Implemented backend services and AI features on AWS (DynamoDB, Cognito, Lambda, Bedrock).",
+        "Set up CI/CD and took part in code review, testing and debugging."
+      ],
+      "es": [
+        "Migré toda la plataforma mobile a React Native.",
+        "Refactoricé el sitio web para reducir deuda técnica.",
+        "Implementé servicios de backend y funcionalidades de IA en AWS (DynamoDB, Cognito, Lambda, Bedrock).",
+        "Configuré CI/CD y participé en code reviews, testing y debugging."
+      ],
+      "fr": [
+        "Migration de toute la plateforme mobile vers React Native.",
+        "Refonte du site web pour réduire la dette technique.",
+        "Services backend et fonctionnalités IA sur AWS (DynamoDB, Cognito, Lambda, Bedrock).",
+        "Mise en place du CI/CD et participation aux revues de code, aux tests et au débogage."
+      ]
+    }
+  },
+  {
+    "id": "loan-platform",
+    "title": {
+      "en": "Loan Request Management",
+      "es": "Gestión de Solicitudes de Préstamo",
+      "fr": "Gestion des demandes de prêt"
+    },
+    "order": 4,
+    "category": "Client",
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "stack": [
+      "Expo",
+      "React Native",
+      "React",
+      "Shadcn/UI",
+      "Supabase Realtime"
+    ],
+    "summary": {
+      "en": "Mobile and web platform that streamlines loan requests from creation to analyst review. Client undisclosed.",
+      "es": "Plataforma móvil y web que agiliza las solicitudes de préstamo, desde su creación hasta la revisión del analista. Cliente confidencial.",
+      "fr": "Plateforme mobile et web qui fluidifie les demandes de prêt, de leur création jusqu'à l'examen par un analyste. Client confidentiel."
+    },
+    "highlights": {
+      "en": [
+        "Mobile app with role-based request creation and blacklist checks for automatic rejection.",
+        "In-app chat between analysts and request creators, powered by Supabase real-time events.",
+        "Web review queue that serves one request at a time, with a review timer for performance tracking.",
+        "Admin tools for user management and analytics."
+      ],
+      "es": [
+        "App móvil con creación de solicitudes según rol y verificación en listas negras para rechazo automático.",
+        "Chat dentro de la app entre analistas y solicitantes, con eventos en tiempo real de Supabase.",
+        "Cola de revisión web que muestra una solicitud por vez, con un temporizador para medir el rendimiento.",
+        "Herramientas de administración para gestión de usuarios y analítica."
+      ],
+      "fr": [
+        "Application mobile avec création de demandes selon le rôle et vérification de listes noires pour un rejet automatique.",
+        "Chat intégré entre analystes et demandeurs, grâce aux événements temps réel de Supabase.",
+        "File d'examen web qui présente une demande à la fois, avec un chronomètre pour suivre la performance.",
+        "Outils d'administration pour la gestion des utilisateurs et l'analytique."
+      ]
+    }
+  },
+  {
+    "id": "tacumbu-finder",
+    "title": "Tacumbu Finder",
+    "order": 5,
+    "category": "Open source",
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "stack": [
+      "React 19",
+      "React Query",
+      "Shadcn/UI",
+      "Tailwind CSS",
+      "Supabase",
+      "Expo",
+      "Tamagui",
+      "Zustand"
+    ],
+    "links": [
+      {
+        "label": {
+          "en": "Native app demo",
+          "es": "Demo de la app nativa",
+          "fr": "Démo de l'app native"
+        },
+        "url": "https://www.linkedin.com/feed/update/urn:li:activity:7229595344601309184/"
+      }
+    ],
+    "summary": {
+      "en": "Search or report online scammers and spammers. Web app plus a native companion.",
+      "es": "Buscá o denunciá estafadores y spammers en línea. App web con una versión nativa.",
+      "fr": "Rechercher ou signaler des arnaqueurs et spammeurs en ligne. Application web et version native."
+    },
+    "highlights": {
+      "en": [
+        "Web app to search and report scammers, backed by Supabase and the ListaHU API.",
+        "Native version (Expo / React Native) with a mobile-friendly report feed and native sharing.",
+        "Built with React Query for data, Shadcn/UI and Tailwind on web, Tamagui and Zustand on mobile."
+      ],
+      "es": [
+        "App web para buscar y denunciar estafadores, con Supabase y la API de ListaHU.",
+        "Versión nativa (Expo / React Native) con un feed de denuncias pensado para mobile y la función nativa de compartir.",
+        "Hecha con React Query para los datos, Shadcn/UI y Tailwind en web, y Tamagui y Zustand en mobile."
+      ],
+      "fr": [
+        "Application web pour rechercher et signaler des arnaqueurs, avec Supabase et l'API ListaHU.",
+        "Version native (Expo / React Native) avec un fil de signalements adapté au mobile et le partage natif.",
+        "Réalisée avec React Query pour les données, Shadcn/UI et Tailwind sur le web, Tamagui et Zustand sur mobile."
+      ]
+    }
+  },
+  {
+    "id": "ettios-game",
+    "title": "Ettios Game",
+    "order": 6,
+    "category": "Game",
+    "featured": true,
+    "platforms": [
+      "Web"
+    ],
+    "stack": [
+      "Unity",
+      "NestJS",
+      "ShaderGraph",
+      "UIToolkit",
+      "TopDownEngine",
+      "NFT integration"
+    ],
+    "collaborators": [
+      {
+        "label": "Abel Franco",
+        "url": "https://afranval.github.io"
+      },
+      {
+        "label": "Sebastian Villamayor"
+      }
+    ],
+    "summary": {
+      "en": "Blockchain game with a holders leaderboard and player customization, rebuilt from scratch in two months.",
+      "es": "Juego blockchain con ranking de holders y personalización de jugadores, reconstruido desde cero en dos meses.",
+      "fr": "Jeu blockchain avec classement des détenteurs et personnalisation des joueurs, reconstruit de zéro en deux mois."
+    },
+    "highlights": {
+      "en": [
+        "Rebuilt the whole game from scratch in just two months.",
+        "NestJS backend with NFT integration and a holders leaderboard.",
+        "Player customization, world-space canvases, ShaderGraph effects and UIToolkit interfaces."
+      ],
+      "es": [
+        "Reconstruimos el juego completo desde cero en solo dos meses.",
+        "Backend en NestJS con integración de NFT y ranking de holders.",
+        "Personalización de jugadores, canvases en world space, efectos con ShaderGraph e interfaces con UIToolkit."
+      ],
+      "fr": [
+        "Le jeu entier a été reconstruit de zéro en seulement deux mois.",
+        "Backend NestJS avec intégration NFT et classement des détenteurs.",
+        "Personnalisation des joueurs, canvases en world space, effets ShaderGraph et interfaces UIToolkit."
+      ]
+    }
+  },
+  {
+    "id": "card",
+    "title": "Car'd",
+    "order": 7,
+    "category": "Game",
+    "platforms": [],
+    "stack": [
+      "Game design"
+    ],
+    "links": [
+      {
+        "label": "Impossible Games",
+        "url": "https://impossiblegames.fun"
+      }
+    ],
+    "summary": {
+      "en": "Card-based puzzle game where you move cars across grids. In development at Impossible Games.",
+      "es": "Juego de puzzles con cartas en el que movés autos por una grilla. En desarrollo en Impossible Games.",
+      "fr": "Jeu de réflexion à base de cartes où l'on déplace des voitures sur une grille. En développement chez Impossible Games."
+    },
+    "highlights": {
+      "en": [
+        "Card-driven puzzle mechanics: play cards to move cars around a grid.",
+        "Developed by Impossible Games."
+      ],
+      "es": [
+        "Mecánicas de puzzle basadas en cartas: jugá cartas para mover autos por la grilla.",
+        "Desarrollado por Impossible Games."
+      ],
+      "fr": [
+        "Mécaniques de réflexion basées sur des cartes : jouez des cartes pour déplacer des voitures sur la grille.",
+        "Développé par Impossible Games."
+      ]
+    }
+  }
+]
