@@ -1,13 +1,20 @@
 ---
 import { skillGroups, operatingSystems } from "../data/skills";
+import { type Lang, useTranslations } from "../i18n";
 import SectionHeading from "./SectionHeading.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 ---
 
 <section id="skills" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
-  <SectionHeading index="04" kicker="toolbox" title="Skills & technologies" />
+  <SectionHeading index="04" kicker={t("skills.kicker")} title={t("skills.title")} />
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {
-      skillGroups.map((g) => (
+      skillGroups(lang).map((g) => (
         <div class="reveal card p-5 transition hover:border-accent/30">
           <p class="mb-4 font-mono text-xs uppercase tracking-widest text-accent">{g.name}</p>
           <ul class="flex flex-wrap gap-1.5">
@@ -20,6 +27,6 @@ import SectionHeading from "./SectionHeading.astro";
     }
   </div>
   <p class="reveal mt-8 font-mono text-xs text-slate-500">
-    Daily drivers: {operatingSystems.join(" · ")}
+    {t("skills.os")}: {operatingSystems.join(" · ")}
   </p>
 </section>

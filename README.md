@@ -12,15 +12,16 @@ npm run build    # type-check + static build into dist/
 
 ## Edit the content
 
-Everything on the page comes from files, no component changes needed:
+The site is in English (`/`), Spanish (`/es/`) and French (`/fr/`). Every text lives in data files, with one entry per language where it differs:
 
 | What | Where |
 |---|---|
-| Name, bio, links, stats, languages | `src/data/profile.ts` |
-| Skills | `src/data/skills.ts` |
-| Work experience | `src/content/experience.json` (roles with `highlights` get a full card; the rest go under "Earlier") |
+| Buttons, headings and other UI labels | `src/i18n.ts` |
+| Bio, title, stats, focus, languages | `src/data/profile.ts` |
+| Skills | `src/data/skills.ts` (tool names are shared; plain-word items are translated in `itemText`) |
+| Work experience | `src/content/experience.json` (dates as `YYYY-MM`; roles with `highlights` get a full card, the rest go under "Earlier"; `order` pins the top roles) |
 | Education | `src/content/education.json` |
-| Projects | one Markdown file per project in `src/content/projects/` (frontmatter = card, `- ` bullets = "what I did") |
+| Projects | `src/content/projects.json` (`summary` and `highlights` per language) |
 
 ## Deploy
 

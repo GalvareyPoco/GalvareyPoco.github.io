@@ -1,117 +1,219 @@
 [
   {
     "id": "itti",
-    "role": "Full-Stack Developer",
+    "role": {
+      "en": "Full-Stack Developer",
+      "es": "Desarrollador Full-Stack",
+      "fr": "Développeur Full-Stack"
+    },
     "company": "ITTI",
     "companyUrl": "https://www.itti.digital",
     "location": "Asunción",
-    "start": "Mar 2025",
+    "start": "2025-03",
     "current": true,
-    "highlights": [
-      "Built payment terminal software for a new POS product, from early prototyping through production rollout.",
-      "Developed native device integrations and the EMV payment flow.",
-      "Implemented secure terminal configuration and device-to-backend communication.",
-      "Built the POS frontend, and ran security and performance tests to find and fix issues."
-    ],
+    "highlights": {
+      "en": [
+        "Built payment terminal software for a new POS product, from early prototyping through production rollout.",
+        "Developed native device integrations and the EMV payment flow.",
+        "Implemented secure terminal configuration and device-to-backend communication.",
+        "Built the POS frontend, and ran security and performance tests to find and fix issues."
+      ],
+      "es": [
+        "Desarrollé el software de terminales de pago para un nuevo producto POS, desde los primeros prototipos hasta su despliegue en producción.",
+        "Desarrollé las integraciones nativas con los dispositivos y el flujo de pago EMV.",
+        "Implementé la configuración segura de terminales y la comunicación entre dispositivos y backend.",
+        "Construí el frontend del POS y realicé pruebas de seguridad y rendimiento para detectar y corregir problemas."
+      ],
+      "fr": [
+        "Développement du logiciel de terminal de paiement d'un nouveau produit POS, des premiers prototypes jusqu'au déploiement en production.",
+        "Développement des intégrations natives avec les terminaux et du parcours de paiement EMV.",
+        "Mise en place de la configuration sécurisée des terminaux et de la communication entre terminaux et backend.",
+        "Développement du frontend POS et tests de sécurité et de performance pour détecter et corriger les problèmes."
+      ]
+    },
     "order": 1
   },
   {
     "id": "happyliving",
-    "role": "Chief Technology Officer",
+    "role": {
+      "en": "Chief Technology Officer",
+      "es": "Director de Tecnología (CTO)",
+      "fr": "Directeur technique (CTO)"
+    },
     "company": "Happy Living",
     "companyUrl": "https://happyliving.lat",
     "location": "Asunción",
-    "start": "Aug 2024",
+    "start": "2024-08",
     "current": true,
-    "highlights": [
-      "Leading the React Native app for building management.",
-      "Migrated the backend from .NET to Go microservices and integrated an AI chatbot for reservations.",
-      "Run the whole platform on our own VPS: Docker, Traefik, domains, S3-compatible storage, backups and CI/CD.",
-      "Set up Novu, Resend and Expo push notifications, with PostHog for product analytics."
-    ],
+    "highlights": {
+      "en": [
+        "Leading the React Native app for building management.",
+        "Migrated the backend from .NET to Go microservices and integrated an AI chatbot for reservations.",
+        "Run the whole platform on our own VPS: Docker, Traefik, domains, S3-compatible storage, backups and CI/CD.",
+        "Set up Novu, Resend and Expo push notifications, with PostHog for product analytics."
+      ],
+      "es": [
+        "Lidero la app en React Native para la administración de edificios.",
+        "Migré el backend de .NET a microservicios en Go e integré un chatbot con IA para reservas.",
+        "Opero toda la plataforma en nuestro propio VPS: Docker, Traefik, dominios, almacenamiento compatible con S3, backups y CI/CD.",
+        "Configuré notificaciones con Novu, Resend y Expo push, y analítica de producto con PostHog."
+      ],
+      "fr": [
+        "Je pilote l'application React Native de gestion d'immeubles.",
+        "Migration du backend de .NET vers des microservices Go et intégration d'un chatbot IA pour les réservations.",
+        "Toute la plateforme tourne sur notre propre VPS : Docker, Traefik, domaines, stockage compatible S3, sauvegardes et CI/CD.",
+        "Mise en place des notifications avec Novu, Resend et les notifications push Expo, et de l'analytique produit avec PostHog."
+      ]
+    },
     "order": 3
   },
   {
     "id": "impossible-games",
-    "role": "Full-Stack Developer",
+    "role": {
+      "en": "Full-Stack Developer",
+      "es": "Desarrollador Full-Stack",
+      "fr": "Développeur Full-Stack"
+    },
     "company": "Impossible Games",
     "companyUrl": "https://impossiblegames.fun",
     "location": "Asunción",
-    "start": "Aug 2023",
+    "start": "2023-08",
     "current": true,
-    "highlights": [
-      "Building Car'd, a card-based puzzle game with cars moving on grids.",
-      "Self-hosting the studio's tools and services."
-    ],
+    "highlights": {
+      "en": [
+        "Building Car'd, a card-based puzzle game with cars moving on grids.",
+        "Self-hosting the studio's tools and services."
+      ],
+      "es": [
+        "Desarrollo Car'd, un juego de puzzles con cartas y autos que se mueven en grillas.",
+        "Autoalojo las herramientas y servicios del estudio."
+      ],
+      "fr": [
+        "Développement de Car'd, un jeu de réflexion à base de cartes où l'on déplace des voitures sur une grille.",
+        "Auto-hébergement des outils et services du studio."
+      ]
+    },
     "order": 4
   },
   {
     "id": "rebuscate",
-    "role": "Co-founder & CTO",
+    "role": {
+      "en": "Co-founder & CTO",
+      "es": "Cofundador y CTO",
+      "fr": "Cofondateur et CTO"
+    },
     "company": "Rebuscate",
     "companyUrl": "https://rebuscate.com",
     "location": "Asunción",
-    "start": "Sep 2022",
+    "start": "2022-09",
     "current": true,
-    "highlights": [
-      "Built a price comparison platform for supermarkets and pharmacies: React Native app, Next.js site, PostgreSQL backend.",
-      "Designed the product-matching algorithm and the Python/Go scrapers and crawlers that feed it.",
-      "Built AI search on a self-hosted Qdrant database with our own embedding service, covering image, text and combined queries.",
-      "Self-host everything on our own VPS, from domains and routing to storage and backups."
-    ],
+    "highlights": {
+      "en": [
+        "Built a price comparison platform for supermarkets and pharmacies: React Native app, Next.js site, PostgreSQL backend.",
+        "Designed the product-matching algorithm and the Python/Go scrapers and crawlers that feed it.",
+        "Built AI search on a self-hosted Qdrant database with our own embedding service, covering image, text and combined queries.",
+        "Self-host everything on our own VPS, from domains and routing to storage and backups."
+      ],
+      "es": [
+        "Construí una plataforma de comparación de precios para supermercados y farmacias: app en React Native, sitio en Next.js y backend en PostgreSQL.",
+        "Diseñé el algoritmo de matching de productos y los scrapers y crawlers en Python y Go que lo alimentan.",
+        "Construí búsqueda con IA sobre una base Qdrant autoalojada con nuestro propio servicio de embeddings, por imagen, texto o ambos.",
+        "Autoalojamos todo en nuestro propio VPS, desde dominios y ruteo hasta almacenamiento y backups."
+      ],
+      "fr": [
+        "Création d'une plateforme de comparaison de prix pour supermarchés et pharmacies : application React Native, site Next.js et backend PostgreSQL.",
+        "Conception de l'algorithme de rapprochement des produits et des scrapers et crawlers en Python et Go qui l'alimentent.",
+        "Recherche IA sur une base Qdrant auto-hébergée avec notre propre service d'embeddings, par image, par texte ou les deux.",
+        "Tout est auto-hébergé sur notre propre VPS, des domaines et du routage jusqu'au stockage et aux sauvegardes."
+      ]
+    },
     "order": 2
   },
   {
     "id": "vert-run",
-    "role": "Frontend Developer",
+    "role": {
+      "en": "Frontend Developer",
+      "es": "Desarrollador Frontend",
+      "fr": "Développeur Frontend"
+    },
     "company": "Vert.run",
     "companyUrl": "https://vert.run",
     "location": "Asunción",
-    "start": "Jan 2024",
-    "end": "Mar 2025",
-    "highlights": [
-      "Migrated the entire mobile platform to React Native.",
-      "Refactored the website and built AI features on AWS (Lambda, DynamoDB, Cognito, Bedrock)."
-    ]
+    "start": "2024-01",
+    "end": "2025-03",
+    "highlights": {
+      "en": [
+        "Migrated the entire mobile platform to React Native.",
+        "Refactored the website and built AI features on AWS (Lambda, DynamoDB, Cognito, Bedrock)."
+      ],
+      "es": [
+        "Migré toda la plataforma mobile a React Native.",
+        "Refactoricé el sitio web y construí funcionalidades de IA en AWS (Lambda, DynamoDB, Cognito, Bedrock)."
+      ],
+      "fr": [
+        "Migration de toute la plateforme mobile vers React Native.",
+        "Refonte du site web et développement de fonctionnalités IA sur AWS (Lambda, DynamoDB, Cognito, Bedrock)."
+      ]
+    }
   },
   {
     "id": "posibillian",
-    "role": "Unity Developer",
+    "role": {
+      "en": "Unity Developer",
+      "es": "Desarrollador Unity",
+      "fr": "Développeur Unity"
+    },
     "company": "Posibillian Tech",
     "location": "Asunción",
-    "start": "Mar 2022",
-    "end": "Aug 2023"
+    "start": "2022-03",
+    "end": "2023-08"
   },
   {
     "id": "kuatiapo",
-    "role": "IT Support Technician",
+    "role": {
+      "en": "IT Support Technician",
+      "es": "Técnico de Soporte IT",
+      "fr": "Technicien support informatique"
+    },
     "company": "Kuatiapo S.A.",
     "location": "Fernando de la Mora",
-    "start": "Apr 2020",
-    "end": "Jun 2022"
+    "start": "2020-04",
+    "end": "2022-06"
   },
   {
     "id": "lina",
-    "role": "Computer Science Teacher",
+    "role": {
+      "en": "Computer Science Teacher",
+      "es": "Profesor de Informática",
+      "fr": "Professeur d'informatique"
+    },
     "company": "Centro de Formación y Capacitación Laboral \"Lina\"",
     "location": "San Juan Bautista, Misiones",
-    "start": "Feb 2018",
-    "end": "Nov 2018"
+    "start": "2018-02",
+    "end": "2018-11"
   },
   {
     "id": "sandivel",
-    "role": "IT Director",
+    "role": {
+      "en": "IT Director",
+      "es": "Director de IT",
+      "fr": "Directeur informatique"
+    },
     "company": "Parador Restaurant Sandivel",
     "location": "San Miguel, Misiones",
-    "start": "Apr 2016",
-    "end": "Dec 2017"
+    "start": "2016-04",
+    "end": "2017-12"
   },
   {
     "id": "mapfre",
-    "role": "Office Assistant",
+    "role": {
+      "en": "Office Assistant",
+      "es": "Asistente Administrativo",
+      "fr": "Assistant de bureau"
+    },
     "company": "MAPFRE",
     "location": "Asunción",
-    "start": "Nov 2014",
-    "end": "Feb 2015"
+    "start": "2014-11",
+    "end": "2015-02"
   }
 ]

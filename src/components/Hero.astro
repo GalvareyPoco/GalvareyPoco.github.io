@@ -1,6 +1,14 @@
 ---
-import { profile } from "../data/profile";
+import { profile, profileText } from "../data/profile";
+import { type Lang, useTranslations } from "../i18n";
 import Terminal from "./Terminal";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const p = profileText(lang);
 ---
 
 <section id="top" class="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
@@ -16,29 +24,29 @@ import Terminal from "./Terminal";
               <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
               <span class="relative inline-flex h-2 w-2 rounded-full bg-accent" />
             </span>
-            Open to freelance work
+            {t("hero.available")}
           </p>
         )
       }
-      <p class="font-mono text-sm text-slate-400">Hi, I'm</p>
+      <p class="font-mono text-sm text-slate-400">{t("hero.hi")}</p>
       <h1 class="mt-2 font-display text-5xl font-bold tracking-tight text-white sm:text-7xl">
         {profile.name}<span class="text-accent">.</span>
       </h1>
-      <p class="mt-4 font-display text-2xl font-medium text-gradient sm:text-3xl">{profile.title}</p>
+      <p class="mt-4 font-display text-2xl font-medium text-gradient sm:text-3xl">{p.title}</p>
       <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
-        I build mobile apps, POS payment software and games, and run the backends behind them. I like shipping real products end to end, from the first commit to the app store.
+        {t("hero.intro")}
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href="#projects" class="rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-ink-950 transition hover:bg-emerald-300">
-          See my work
+          {t("hero.cta.work")}
         </a>
         <a href="#contact" class="rounded-xl border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/5">
-          Get in touch
+          {t("hero.cta.contact")}
         </a>
       </div>
-      <p class="mt-8 font-mono text-xs text-slate-500">📍 {profile.location}</p>
+      <p class="mt-8 font-mono text-xs text-slate-500">📍 {p.location}</p>
     </div>
 
-    <Terminal client:visible />
+    <Terminal client:visible lang={lang} label={t("hero.terminalLabel")} />
   </div>
 </section>

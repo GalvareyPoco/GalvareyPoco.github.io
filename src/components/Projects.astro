@@ -1,24 +1,45 @@
 ---
 import { getCollection } from "astro:content";
+import { type Lang, pick, useTranslations } from "../i18n";
 import SectionHeading from "./SectionHeading.astro";
 import ProjectGrid, { type ProjectCard } from "./ProjectGrid";
 
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
 const entries = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
 
-// Highlights are the "- " bullet lines of each project's Markdown body.
-const projects: ProjectCard[] = entries.map(({ id, data, body }) => ({
+// Resolve every text to this page's language before handing the cards to the React island.
+const projects: ProjectCard[] = entries.map(({ id, data }) => ({
   id,
-  ...data,
-  highlights: (body ?? "")
-    .split("\n")
-    .filter((l) => l.trimStart().startsWith("- "))
-    .map((l) => l.trimStart().slice(2).trim()),
+  title: pick(data.title, lang),
+  summary: data.summary[lang],
+  highlights: data.highlights[lang],
+  category: data.category,
+  categoryLabel: t(`category.${data.category}`),
+  platforms: data.platforms,
+  stack: data.stack,
+  url: data.url,
+  links: data.links.map((l) => ({ label: pick(l.label, lang), url: l.url })),
+  collaborators: data.collaborators,
+  featured: data.featured,
 }));
+
+const labels = {
+  all: t("projects.all"),
+  filter: t("projects.filter"),
+  more: t("projects.more"),
+  less: t("projects.less"),
+  with: t("projects.with"),
+};
 ---
 
 <section id="projects" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
-  <SectionHeading index="03" kicker="things I've built" title="Selected projects" />
+  <SectionHeading index="03" kicker={t("projects.kicker")} title={t("projects.title")} />
   <div class="reveal">
-    <ProjectGrid client:visible projects={projects} />
+    <ProjectGrid client:visible projects={projects} labels={labels} />
   </div>
 </section>
