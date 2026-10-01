@@ -2,11 +2,16 @@
 import { getCollection } from "astro:content";
 import SectionHeading from "./SectionHeading.astro";
 
-// Collections don't keep file order, so sort explicitly: current roles first, then newest start date.
+// Collections don't keep file order, so sort explicitly: manual `order` first, then current roles, then newest start date.
 const startTime = (d?: string) => (d ? Date.parse(`1 ${d}`) || Date.parse(d) || 0 : 0);
 const experience = (await getCollection("experience"))
   .map((e) => e.data)
-  .sort((a, b) => Number(b.current) - Number(a.current) || startTime(b.start) - startTime(a.start));
+  .sort(
+    (a, b) =>
+      (a.order ?? Infinity) - (b.order ?? Infinity) ||
+      Number(b.current) - Number(a.current) ||
+      startTime(b.start) - startTime(a.start),
+  );
 // Roles with highlights get full timeline cards; the rest are listed compactly under "Earlier".
 const featured = experience.filter((e) => e.highlights.length > 0 || e.placeholder);
 const earlier = experience.filter((e) => e.highlights.length === 0 && !e.placeholder);
