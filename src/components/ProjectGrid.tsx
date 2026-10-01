@@ -56,7 +56,7 @@ export default function ProjectGrid({ projects, labels }: { projects: ProjectCar
           return (
             <article
               key={p.id}
-              className={`group relative flex flex-col rounded-2xl border bg-ink-900/70 p-6 transition duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/5 ${
+              className={`spotlight group flex flex-col rounded-2xl border bg-ink-900/70 p-6 transition duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/5 ${
                 p.featured ? "border-white/12" : "border-white/8"
               }`}
             >

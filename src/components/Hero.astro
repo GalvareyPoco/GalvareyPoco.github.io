@@ -1,7 +1,8 @@
 ---
 import { profile, profileText } from "../data/profile";
 import { type Lang, useTranslations } from "../i18n";
-import Terminal from "./Terminal";
+import Lanyard from "./lanyard/Lanyard";
+import type { BadgeInfo } from "./lanyard/badgeTexture";
 
 interface Props {
   lang: Lang;
@@ -9,14 +10,40 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const p = profileText(lang);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const badge: BadgeInfo = {
+  name: profile.name,
+  role: p.title,
+  location: "ASUNCIÓN · PY",
+  photo: `${base}/${profile.photo}`,
+  id: "#61221866",
+  site: Astro.site ? new URL(Astro.site).host : "",
+  back: ["> whoami", "full-stack · cto · game dev", "> stack", "react-native · go · node", "unity · godot · postgres", "> awards", "moonshot '25 · innovandopy '25", "> status", "sipping tereré"],
+  access: "ACCESS: ROOT",
+};
 ---
 
-<section id="top" class="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
+<section id="top" class="relative overflow-hidden pt-24 pb-12 sm:pt-28 lg:min-h-[100svh] lg:pb-16">
   <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]"></div>
   <div class="pointer-events-none absolute -top-40 left-1/2 h-[480px] w-[780px] -translate-x-1/2 rounded-full bg-accent/15 blur-[120px]"></div>
 
-  <div class="relative mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr]">
-    <div>
+  <!-- Cinematic HUD -->
+  <div class="pointer-events-none absolute inset-x-3 top-20 bottom-3 hidden sm:block" aria-hidden="true">
+    <span class="hud-corner top-0 left-0 border-t-2 border-l-2"></span>
+    <span class="hud-corner top-0 right-0 border-t-2 border-r-2"></span>
+    <span class="hud-corner bottom-0 left-0 border-b-2 border-l-2"></span>
+    <span class="hud-corner right-0 bottom-0 border-r-2 border-b-2"></span>
+    <p class="absolute top-3 left-8 font-mono text-[10px] tracking-widest text-slate-500">
+      <span class="animate-pulse text-red-500">●</span> REC · SC.00 · TAKE 01
+    </p>
+    <p class="absolute top-3 right-8 font-mono text-[10px] tracking-widest text-slate-500">25.2637°S 57.5759°W</p>
+    <p class="absolute bottom-3 left-8 font-mono text-[10px] tracking-widest text-slate-500">ISO 800 · 24 FPS · 2.39:1</p>
+  </div>
+
+  <div class="mx-auto grid max-w-6xl items-center gap-6 px-4 sm:px-6 lg:min-h-[calc(100svh-10rem)] lg:grid-cols-[1.15fr_1fr]">
+    <!-- On desktop the badge canvas fills the hero behind this column; empty space lets the pointer through to it. -->
+    <div class="relative z-10 pt-6 lg:pointer-events-none lg:pt-0 lg:*:pointer-events-auto">
       {
         profile.available && (
           <p class="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 font-mono text-xs text-accent">
@@ -29,24 +56,24 @@ const p = profileText(lang);
         )
       }
       <p class="font-mono text-sm text-slate-400">{t("hero.hi")}</p>
-      <h1 class="mt-2 font-display text-5xl font-bold tracking-tight text-white sm:text-7xl">
-        {profile.name}<span class="text-accent">.</span>
+      <h1 class="mt-2 font-display text-6xl font-bold tracking-tight text-white sm:text-8xl">
+        <span data-scramble>{profile.name}</span><span class="text-accent">.</span>
       </h1>
       <p class="mt-4 font-display text-2xl font-medium text-gradient sm:text-3xl">{p.title}</p>
       <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
         {t("hero.intro")}
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a href="#projects" class="rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-ink-950 transition hover:bg-emerald-300">
+        <a href="#projects" class="rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-ink-950 transition hover:brightness-110">
           {t("hero.cta.work")}
         </a>
-        <a href="#contact" class="rounded-xl border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/5">
-          {t("hero.cta.contact")}
+        <a href="#awards" class="rounded-xl border border-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/5">
+          🏆 {t("hero.cta.awards")}
         </a>
       </div>
       <p class="mt-8 font-mono text-xs text-slate-500">📍 {p.location}</p>
     </div>
 
-    <Terminal client:visible lang={lang} label={t("hero.terminalLabel")} />
+    <Lanyard client:visible info={badge} hint={t("hero.badgeHint")} />
   </div>
 </section>

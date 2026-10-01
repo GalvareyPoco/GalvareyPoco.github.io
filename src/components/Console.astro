@@ -1,0 +1,50 @@
+---
+import { getCollection } from "astro:content";
+import { awardLines } from "../data/awards";
+import { profile } from "../data/profile";
+import { type Lang, useTranslations } from "../i18n";
+import SectionHeading from "./SectionHeading.astro";
+import Terminal, { type TerminalData } from "./Terminal";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const data: TerminalData = {
+  awards: awardLines(lang),
+  projects: (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order).map((p) => p.id),
+  socials: profile.socials.map((s) => ({ label: s.label, url: s.url })),
+  linkedin: profile.socials[1].url,
+};
+---
+
+<section id="console" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
+  <SectionHeading index="06" kicker={t("console.kicker")} title={t("console.title")} />
+  <div class="reveal grid items-center gap-10 lg:grid-cols-[1fr_1.4fr]">
+    <div class="space-y-4 text-lg text-slate-400">
+      <p>{t("console.body")}</p>
+      <ul class="space-y-1 font-mono text-sm">
+        {
+          ["help", "awards", "theme neon", "terere", "sudo hire-me"].map((c) => (
+            <li>
+              <button type="button" data-run={c} class="rounded px-1 py-0.5 text-slate-300 transition hover:bg-white/5 hover:text-white">
+                <span class="text-accent">❯</span> {c}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="font-mono text-xs text-slate-500">{t("console.konami")}</p>
+    </div>
+    <Terminal client:visible lang={lang} label={t("hero.terminalLabel")} data={data} />
+  </div>
+</section>
+
+<script>
+  // The suggested commands type themselves into the terminal.
+  document.querySelectorAll<HTMLButtonElement>("[data-run]").forEach((b) =>
+    b.addEventListener("click", () => window.dispatchEvent(new CustomEvent("terminal:run", { detail: b.dataset.run }))),
+  );
+</script>

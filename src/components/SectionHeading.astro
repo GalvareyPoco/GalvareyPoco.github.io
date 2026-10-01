@@ -8,9 +8,10 @@ const { index, title, kicker } = Astro.props;
 ---
 
 <div class="reveal mb-10 flex flex-col gap-2">
-  <p class="font-mono text-sm text-accent">
-    <span class="text-slate-500">{index}.</span>
+  <p class="flex items-center gap-3 font-mono text-sm text-accent">
+    <span class="rounded border border-white/15 px-1.5 py-0.5 text-[11px] tracking-widest text-slate-400">SC.{index}</span>
     {kicker}
+    <span class="h-px max-w-24 flex-1 bg-gradient-to-r from-accent/50 to-transparent"></span>
   </p>
-  <h2 class="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">{title}</h2>
+  <h2 class="font-display text-3xl font-bold tracking-tight text-white sm:text-5xl"><span data-scramble>{title}</span></h2>
 </div>
