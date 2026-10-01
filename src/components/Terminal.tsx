@@ -7,6 +7,7 @@ type Step = { cmd: string; out: string[] };
 
 export type TerminalData = {
   awards: string[];
+  journey: string[];
   projects: string[];
   socials: { label: string; url: string }[];
   linkedin: string;
@@ -37,16 +38,17 @@ const T = {
       "help             this list",
       "whoami           who's behind the keyboard",
       "awards           prizes we've won",
+      "whereami         places I've lived",
       "projects         things I've built",
       "socials          where to find me",
-      "cd <section>     jump to about, awards, experience, projects, skills, contact",
+      "cd <section>     jump to about, journey, awards, experience, projects, skills, contact",
       "theme [name]     matrix · neon · amber · terere",
       "terere           replay the intro",
       "matrix           follow the white rabbit",
       "sudo hire-me     you know you want to",
       "clear            clean the screen",
     ],
-    whoami: ["Galvarey · full-stack dev, CTO and game maker from Asunción, Paraguay.", "10+ years in tech. Speaks ES · EN · FR. Likes turtles 🐢"],
+    whoami: ["Guillermo Alvarez, aka Galvarey · full-stack dev, CTO and game maker from Asunción, Paraguay.", "10+ years in tech. Speaks ES · EN · FR. Likes turtles 🐢"],
     notFound: (c: string) => `command not found: ${c}. try \`help\``,
     theme: (t: string) => `theme set to ${t}`,
     themeUsage: "usage: theme <matrix|neon|amber|terere>",
@@ -54,7 +56,7 @@ const T = {
     matrix: "wake up, neo...",
     hire: ["[sudo] password for recruiter: ********", "access granted ✔ opening LinkedIn..."],
     cd: (s: string) => `cd ~/${s}`,
-    cdUsage: "usage: cd <about|awards|experience|projects|skills|contact>",
+    cdUsage: "usage: cd <about|journey|awards|experience|projects|skills|contact>",
     rm: "nice try. permission denied 😏",
     input: "Terminal command",
   },
@@ -64,16 +66,17 @@ const T = {
       "help             esta lista",
       "whoami           quién está detrás del teclado",
       "awards           premios que ganamos",
+      "whereami         dónde viví",
       "projects         lo que construí",
       "socials          dónde encontrarme",
-      "cd <sección>     ir a about, awards, experience, projects, skills, contact",
+      "cd <sección>     ir a about, journey, awards, experience, projects, skills, contact",
       "theme [nombre]   matrix · neon · amber · terere",
       "terere           repetir la intro",
       "matrix           seguí al conejo blanco",
       "sudo hire-me     sabés que querés",
       "clear            limpiar la pantalla",
     ],
-    whoami: ["Galvarey · dev full-stack, CTO y creador de videojuegos de Asunción, Paraguay.", "10+ años en tecnología. Habla ES · EN · FR. Le gustan las tortugas 🐢"],
+    whoami: ["Guillermo Alvarez, aka Galvarey · dev full-stack, CTO y creador de videojuegos de Asunción, Paraguay.", "10+ años en tecnología. Habla ES · EN · FR. Le gustan las tortugas 🐢"],
     notFound: (c: string) => `comando no encontrado: ${c}. probá \`help\``,
     theme: (t: string) => `tema cambiado a ${t}`,
     themeUsage: "uso: theme <matrix|neon|amber|terere>",
@@ -81,7 +84,7 @@ const T = {
     matrix: "despertá, neo...",
     hire: ["[sudo] contraseña para reclutador: ********", "acceso concedido ✔ abriendo LinkedIn..."],
     cd: (s: string) => `cd ~/${s}`,
-    cdUsage: "uso: cd <about|awards|experience|projects|skills|contact>",
+    cdUsage: "uso: cd <about|journey|awards|experience|projects|skills|contact>",
     rm: "buen intento. permiso denegado 😏",
     input: "Comando de terminal",
   },
@@ -91,16 +94,17 @@ const T = {
       "help             cette liste",
       "whoami           qui est derrière le clavier",
       "awards           nos prix",
+      "whereami         où j'ai vécu",
       "projects         ce que j'ai construit",
       "socials          où me trouver",
-      "cd <section>     aller à about, awards, experience, projects, skills, contact",
+      "cd <section>     aller à about, journey, awards, experience, projects, skills, contact",
       "theme [nom]      matrix · neon · amber · terere",
       "terere           rejouer l'intro",
       "matrix           suivez le lapin blanc",
       "sudo hire-me     vous en avez envie",
       "clear            effacer l'écran",
     ],
-    whoami: ["Galvarey · dev full-stack, CTO et créateur de jeux à Asunción, au Paraguay.", "10+ ans dans la tech. Parle ES · EN · FR. Adore les tortues 🐢"],
+    whoami: ["Guillermo Alvarez, aka Galvarey · dev full-stack, CTO et créateur de jeux à Asunción, au Paraguay.", "10+ ans dans la tech. Parle ES · EN · FR. Adore les tortues 🐢"],
     notFound: (c: string) => `commande introuvable : ${c}. essayez \`help\``,
     theme: (t: string) => `thème : ${t}`,
     themeUsage: "usage : theme <matrix|neon|amber|terere>",
@@ -108,13 +112,13 @@ const T = {
     matrix: "réveille-toi, neo...",
     hire: ["[sudo] mot de passe pour recruteur : ********", "accès accordé ✔ ouverture de LinkedIn..."],
     cd: (s: string) => `cd ~/${s}`,
-    cdUsage: "usage : cd <about|awards|experience|projects|skills|contact>",
+    cdUsage: "usage : cd <about|journey|awards|experience|projects|skills|contact>",
     rm: "bien essayé. permission refusée 😏",
     input: "Commande du terminal",
   },
 } satisfies Record<Lang, unknown>;
 
-const SECTIONS = ["about", "awards", "experience", "projects", "skills", "contact"];
+const SECTIONS = ["about", "journey", "awards", "experience", "projects", "skills", "contact"];
 const TYPE_MS = 45;
 const PAUSE_MS = 600;
 
@@ -218,6 +222,11 @@ export default function Terminal({ lang, label, data }: { lang: Lang; label: str
       case "awards":
       case "prizes":
         say(...data.awards.map((a) => `🏆 ${a}`));
+        break;
+      case "journey":
+      case "whereami":
+        say(...data.journey);
+        document.getElementById("journey")?.scrollIntoView({ behavior: "smooth" });
         break;
       case "projects":
       case "ls":

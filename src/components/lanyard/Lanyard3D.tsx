@@ -2,7 +2,9 @@
 // 3D badge on a lanyard you can grab and throw around.
 // Physics rig adapted from React Bits' Lanyard (https://reactbits.dev/components/lanyard),
 // © David Haz, MIT + Commons Clause. The card itself is drawn here instead of loaded from a model,
-// so it carries Galvarey's photo and name and follows the site's color theme.
+// so it carries Galvarey's photo and name and follows the site's color theme. The front mixes in
+// React Bits' ProfileCard (layout + holographic foil via iridescence) and PixelCard (pixel ripple on boot and hover).
+// Tap the card to spin it and see the back.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, extend, useFrame, useThree, type ThreeElement, type ThreeEvent } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
@@ -18,7 +20,7 @@ import {
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import * as THREE from "three";
-import { drawBack, drawFront, drawStrap, type BadgeInfo } from "./badgeTexture";
+import { drawBack, drawFront, drawPixels, drawStrap, type BadgeInfo } from "./badgeTexture";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -32,6 +34,8 @@ declare module "@react-three/fiber" {
 
 const CARD_W = 1.6;
 const CARD_H = 2.25;
+const PIX_W = 32;
+const PIX_H = 45;
 
 type Props = { info: BadgeInfo; accent: string; accent2: string; onReady?: () => void };
 
@@ -184,6 +188,26 @@ function Band({
     };
   }, [info, accent, accent2]);
 
+  // PixelCard overlay: a tiny canvas drawn with nearest filtering so each texel reads as a chunky pixel.
+  const pixels = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = PIX_W;
+    c.height = PIX_H;
+    const tex = new THREE.CanvasTexture(c);
+    tex.magFilter = tex.minFilter = THREE.NearestFilter;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return { ctx: c.getContext("2d")!, tex, cells: new Float32Array(PIX_W * PIX_H) };
+  }, []);
+  const pix = useRef({ on: false, t: 0, origin: [0.5, 0.5] as [number, number], alive: false, bootUntil: 0 });
+  useEffect(() => {
+    if (!faces) return;
+    // Boot: a ripple from the centre as the card appears.
+    pix.current = { ...pix.current, on: true, t: 0, origin: [0.5, 0.45], bootUntil: performance.now() + 1300 };
+  }, [faces]);
+  const colors = useMemo(() => [accent, accent2, "#ffffff", accent], [accent, accent2]);
+  const tap = useRef<{ x: number; y: number; t: number } | null>(null);
+  const spin = useRef(false);
+
   const [curve] = useState(() => {
     const c = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]);
     c.curveType = "chordal";
@@ -210,7 +234,11 @@ function Band({
 
   useEffect(() => {
     if (!dragged) return;
-    const release = () => {
+    const release = (e: PointerEvent) => {
+      // A quick tap without moving spins the card around to show the back.
+      const t = tap.current;
+      if (t && Math.hypot(e.clientX - t.x, e.clientY - t.y) < 6 && performance.now() - t.t < 300) spin.current = true;
+      tap.current = null;
       drag(false);
       grabbing.current = false;
     };
@@ -232,7 +260,22 @@ function Band({
       [card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp());
       card.current?.setNextKinematicTranslation({ x: vec.x - dragged.x, y: vec.y - dragged.y, z: vec.z - dragged.z });
     }
+    // Pixel overlay
+    const p = pix.current;
+    if (p.bootUntil && performance.now() > p.bootUntil) {
+      p.bootUntil = 0;
+      p.on = hovered;
+    }
+    if (p.on || p.alive) {
+      p.t += delta;
+      p.alive = drawPixels(pixels.ctx, pixels.cells, p.t, p.on, p.origin, colors, delta);
+      pixels.tex.needsUpdate = true;
+    }
     if (!fixed.current || !band.current) return;
+    if (spin.current && !dragged) {
+      spin.current = false;
+      card.current.setAngvel({ x: 0, y: 14, z: 0 }, true);
+    }
     for (const ref of [j1, j2]) {
       const l = lerped(ref.current);
       const d = Math.max(0.1, Math.min(1, l.distanceTo(ref.current.translation())));
@@ -265,10 +308,18 @@ function Band({
         <RigidBody position={[2, 0, 0]} ref={card} {...segmentProps} type={dragged ? "kinematicPosition" : "dynamic"}>
           <CuboidCollider args={[CARD_W / 2, CARD_H / 2, 0.02]} />
           <group
-            onPointerOver={() => hover(true)}
-            onPointerOut={() => hover(false)}
+            onPointerOver={(e: ThreeEvent<PointerEvent>) => {
+              hover(true);
+              const p = pix.current;
+              if (!p.on) Object.assign(p, { on: true, t: 0, origin: e.uv ? [Math.min(1, Math.max(0, e.uv.x)), Math.min(1, Math.max(0, 1 - e.uv.y))] : [0.5, 0.5] });
+            }}
+            onPointerOut={() => {
+              hover(false);
+              if (!pix.current.bootUntil) pix.current.on = false;
+            }}
             onPointerDown={(e: ThreeEvent<PointerEvent>) => {
               e.stopPropagation();
+              tap.current = { x: e.nativeEvent.clientX, y: e.nativeEvent.clientY, t: performance.now() };
               // Keep receiving moves while the pointer is over the hero text above the canvas.
               (e.target as unknown as Element).setPointerCapture(e.pointerId);
               grabbing.current = true;
@@ -281,7 +332,20 @@ function Band({
             {faces && (
               <>
                 <mesh geometry={face} position={[0, 0, 0.031]}>
-                  <meshPhysicalMaterial map={faces.front} roughness={0.55} metalness={0.15} clearcoat={isMobile ? 0 : 1} clearcoatRoughness={0.15} />
+                  {/* Iridescence gives the ProfileCard-style holographic foil as the card turns in the light. */}
+                  <meshPhysicalMaterial
+                    map={faces.front}
+                    roughness={0.45}
+                    metalness={0.2}
+                    clearcoat={isMobile ? 0 : 1}
+                    clearcoatRoughness={0.15}
+                    iridescence={isMobile ? 0.4 : 1}
+                    iridescenceIOR={1.4}
+                    iridescenceThicknessRange={[150, 650]}
+                  />
+                </mesh>
+                <mesh geometry={face} position={[0, 0, 0.034]}>
+                  <meshBasicMaterial map={pixels.tex} transparent blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
                 </mesh>
                 <mesh geometry={face} position={[0, 0, -0.031]} rotation={[0, Math.PI, 0]}>
                   <meshPhysicalMaterial map={faces.back} roughness={0.55} metalness={0.15} clearcoat={isMobile ? 0 : 1} clearcoatRoughness={0.15} />

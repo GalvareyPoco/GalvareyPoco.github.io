@@ -124,6 +124,9 @@ html[data-theme="terere"] {
 .marquee-track {
   animation: marquee 40s linear infinite;
 }
+.marquee-track.reverse {
+  animation-direction: reverse;
+}
 .marquee:hover .marquee-track {
   animation-play-state: paused;
 }
@@ -141,6 +144,121 @@ html[data-intro] .intro-root {
 html[data-intro] body {
   overflow: hidden;
 }
+html[data-intro] .target-cursor {
+  display: none;
+}
+
+/* Decrypting text keeps its box; see scramble() in lib/effects.ts. */
+[data-scramble] {
+  display: inline-block;
+}
+
+/* Words lit by scroll (ScrollReveal). */
+.word {
+  opacity: 0.18;
+  transition: opacity 0.35s ease, color 0.35s ease;
+}
+.word.is-lit {
+  opacity: 1;
+}
+
+/* Glare layer for [data-tilt] cards; --glare is set while the pointer is over the card. */
+[data-tilt] {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+[data-tilt]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: calc(var(--glare, 0) * 0.6);
+  transition: opacity 0.3s;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.14), transparent 45%);
+  mix-blend-mode: screen;
+}
+
+/* Animated border light (StarBorder). */
+.star-ring {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--angle, 0deg), transparent 0 70%, var(--color-accent) 80%, var(--color-accent-2) 88%, transparent 95%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-border 6s linear infinite;
+  pointer-events: none;
+}
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes spin-border {
+  to { --angle: 360deg; }
+}
+
+/* Crosshair cursor (TargetCursor). */
+.target-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 130;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.target-cursor i {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--color-accent);
+  border-style: solid;
+  border-width: 0;
+}
+.target-cursor i:nth-child(1) { left: 0; top: 0; border-top-width: 2px; border-left-width: 2px; }
+.target-cursor i:nth-child(2) { right: 0; top: 0; border-top-width: 2px; border-right-width: 2px; }
+.target-cursor i:nth-child(3) { left: 0; bottom: 0; border-bottom-width: 2px; border-left-width: 2px; }
+.target-cursor i:nth-child(4) { right: 0; bottom: 0; border-bottom-width: 2px; border-right-width: 2px; }
+.target-cursor:not(.is-locked) {
+  animation: cursor-spin 4s linear infinite;
+}
+@keyframes cursor-spin {
+  to { rotate: 360deg; }
+}
+
+/* Experience timeline dots light up when reached. */
+[data-timeline-dot] {
+  transition: background-color 0.4s, border-color 0.4s, box-shadow 0.4s;
+}
+[data-timeline-dot].is-lit {
+  border-color: var(--color-accent);
+  background-color: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  box-shadow: 0 0 16px color-mix(in oklab, var(--color-accent) 60%, transparent);
+}
+
+/* RGB-split glitch on hover (GlitchText). */
+.glitch {
+  position: relative;
+}
+.glitch:hover {
+  animation: glitch 0.6s steps(2) infinite;
+}
+@keyframes glitch {
+  0% { text-shadow: 2px 0 var(--color-accent), -2px 0 #f43f5e; }
+  25% { text-shadow: -3px 1px var(--color-accent), 2px -1px #f43f5e; transform: translate(1px, 0); }
+  50% { text-shadow: 1px -2px var(--color-accent), -1px 2px #f43f5e; transform: translate(-1px, 1px); }
+  75% { text-shadow: -2px 0 var(--color-accent), 3px 0 #f43f5e; transform: none; }
+  100% { text-shadow: 2px 0 var(--color-accent), -2px 0 #f43f5e; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
 
 /* Fade-up on scroll; toggled by a tiny IntersectionObserver in the layout. */
 .reveal {
@@ -155,5 +273,31 @@ html[data-intro] body {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .grain, .marquee-track { animation: none; }
+  .grain, .marquee-track, .star-ring { animation: none; }
+  .word { opacity: 1; }
+}
+
+/* Labels pinned to globe markers with CSS anchor positioning (cobe exposes --cobe-<id> anchors). */
+.globe-label {
+  position: absolute;
+  bottom: anchor(top);
+  left: anchor(center);
+  translate: -50% -8px;
+  pointer-events: none;
+  white-space: nowrap;
+  border-radius: 9999px;
+  border: 1px solid rgb(255 255 255 / 0.15);
+  background: rgb(7 9 15 / 0.75);
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #cbd5e1;
+  transition: opacity 0.3s;
+}
+.globe-label[data-active="true"] {
+  border-color: var(--color-accent);
+  color: #fff;
+}
+@supports not (anchor-name: --a) {
+  .globe-label { display: none; }
 }
