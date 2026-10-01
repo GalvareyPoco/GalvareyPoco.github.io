@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import createGlobe from "cobe";
-import type { JourneyStop } from "../data/journey";
+import type { JourneyPlace, JourneyStop } from "../data/journey";
 
-// Scroll-driven globe: as each place scrolls to the middle of the screen, the globe turns to it.
-// The globe can also be dragged. Uses cobe (~5 KB WebGL globe).
+// Scroll-driven globe: as each chapter scrolls to the middle of the screen, the globe turns to it and the route
+// grows by one leg. The globe can also be dragged. Uses cobe (~5 KB WebGL globe).
 
 const toAngles = ([lat, lon]: [number, number]) => [Math.PI - ((lon * Math.PI) / 180 - Math.PI / 2), (lat * Math.PI) / 180] as const;
 
@@ -12,13 +12,18 @@ function hexToRgb(hex: string): [number, number, number] {
   return m ? [parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255] : [0.2, 0.83, 0.6];
 }
 
-export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dragHint: string }) {
+const fmt = new Intl.NumberFormat("en-US");
+
+export default function Journey({ stops, places, dragHint, kmLabel }: { stops: JourneyStop[]; places: JourneyPlace[]; dragHint: string; kmLabel: string }) {
   const [active, setActive] = useState(0);
+  const [km, setKm] = useState(0);
   const activeRef = useRef(0);
   const canvas = useRef<HTMLCanvasElement>(null);
   const items = useRef<(HTMLLIElement | null)[]>([]);
+  const list = useRef<HTMLOListElement>(null);
+  const [fill, setFill] = useState(0);
 
-  // Which stop is in the middle of the screen.
+  // Which chapter is in the middle of the screen.
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
@@ -36,6 +41,40 @@ export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dra
     return () => io.disconnect();
   }, []);
 
+  // The route line beside the chapters fills as you scroll.
+  useEffect(() => {
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const el = list.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      setFill(Math.max(0, Math.min(1, (innerHeight * 0.5 - r.top) / r.height)));
+    };
+    const onScroll = () => !queued && (queued = true) && requestAnimationFrame(update);
+    addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Distance counter eases toward the active chapter's total.
+  useEffect(() => {
+    const target = stops[active].km;
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const k = 1 - Math.exp(-(now - last) / 180);
+      last = now;
+      setKm((v) => {
+        const next = Math.abs(target - v) < 20 ? target : v + (target - v) * k;
+        if (next !== target) raf = requestAnimationFrame(tick);
+        return next;
+      });
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [active, stops]);
+
   useEffect(() => {
     const el = canvas.current;
     if (!el) return;
@@ -43,24 +82,37 @@ export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dra
     const css = getComputedStyle(document.documentElement);
     let accent = hexToRgb(css.getPropertyValue("--color-accent"));
     let accent2 = hexToRgb(css.getPropertyValue("--color-accent-2"));
+    // cobe multiplies width/height by devicePixelRatio itself.
     const dpr = Math.min(window.devicePixelRatio, 2);
     let size = el.offsetWidth;
     let [phi, theta] = toAngles(stops[0].location);
     let drag = 0;
     let dragging: number | null = null;
     let visible = true;
+    let shown = -1;
 
-    const markers = () =>
-      stops.map((s, i) => ({
-        location: s.location,
-        size: i === activeRef.current ? 0.1 : 0.05,
-        color: i === activeRef.current ? accent : accent2,
-        id: s.id,
+    const markers = () => {
+      const here = stops[activeRef.current].placeId;
+      const seen = new Set(stops.slice(0, activeRef.current + 1).map((s) => s.placeId));
+      return places.map((p) => ({
+        location: p.location,
+        size: p.id === here ? 0.1 : seen.has(p.id) ? 0.06 : 0.035,
+        color: p.id === here ? accent : seen.has(p.id) ? accent2 : ([0.45, 0.5, 0.6] as [number, number, number]),
+        id: p.id,
       }));
+    };
+    // One arc per leg travelled so far; the latest leg is bright.
+    const arcs = () =>
+      stops.slice(1, activeRef.current + 1).flatMap((s, i) => {
+        const from = stops[i];
+        if (from.placeId === s.placeId) return [];
+        return [{ from: from.location, to: s.location, id: `leg-${i}`, color: i + 1 === activeRef.current ? accent : accent2 }];
+      });
+
     const globe = createGlobe(el, {
       devicePixelRatio: dpr,
-      width: size * dpr,
-      height: size * dpr,
+      width: size,
+      height: size,
       phi,
       theta,
       dark: 1,
@@ -71,9 +123,9 @@ export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dra
       markerColor: accent,
       glowColor: [0.12, 0.16, 0.2],
       markers: markers(),
-      arcs: stops.slice(1).map((s) => ({ from: stops[0].location, to: s.location, id: `${stops[0].id}-${s.id}` })),
+      arcs: arcs(),
       arcColor: accent,
-      arcWidth: 0.6,
+      arcWidth: 0.7,
       arcHeight: 0.35,
       markerElevation: 0.02,
     });
@@ -88,7 +140,16 @@ export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dra
       phi += dp * k;
       theta += (tt * 0.8 - theta) * k;
       if (dragging === null) drag *= reduced ? 0 : 0.96;
-      if (visible) globe.update({ phi: phi + drag, theta, markers: markers(), markerColor: accent, arcColor: accent });
+      if (visible) {
+        const state: Parameters<typeof globe.update>[0] = { phi: phi + drag, theta };
+        // Marker and arc buffers are only re-uploaded when the chapter changes.
+        if (shown !== activeRef.current) {
+          shown = activeRef.current;
+          state.markers = markers();
+          state.arcs = arcs();
+        }
+        globe.update(state);
+      }
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
@@ -97,12 +158,14 @@ export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dra
     io.observe(el);
     const onResize = () => {
       size = el.offsetWidth;
-      globe.update({ width: size * dpr, height: size * dpr });
+      globe.update({ width: size, height: size });
     };
     const onTheme = () => {
       const s = getComputedStyle(document.documentElement);
       accent = hexToRgb(s.getPropertyValue("--color-accent"));
       accent2 = hexToRgb(s.getPropertyValue("--color-accent-2"));
+      globe.update({ markerColor: accent, arcColor: accent });
+      shown = -1;
     };
     const down = (e: PointerEvent) => {
       dragging = e.clientX - drag * 200;
@@ -130,9 +193,10 @@ export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dra
       removeEventListener("resize", onResize);
       removeEventListener("themechange", onTheme);
     };
-  }, [stops]);
+  }, [stops, places]);
 
   const stop = stops[active];
+  const here = stop.placeId;
   return (
     <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
       <div className="sticky top-16 z-0 h-[min(88vw,380px)] self-start sm:top-20 sm:h-[460px] lg:top-24 lg:h-[540px]">
@@ -141,24 +205,39 @@ export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dra
           <canvas
             ref={canvas}
             className="relative h-full w-full cursor-grab touch-pan-y opacity-0 transition-opacity duration-1000"
-            aria-label={`${stop.city}, ${stop.country}`}
+            aria-label={`${stop.title}, ${stop.where}`}
             role="img"
           />
-          {stops.map((s, i) => (
-            <span key={s.id} className="globe-label" data-active={i === active} style={{ positionAnchor: `--cobe-${s.id}`, opacity: `var(--cobe-visible-${s.id}, 0)` } as React.CSSProperties}>
-              {s.flag} {s.city}
+          {places.map((p) => (
+            <span
+              key={p.id}
+              className="globe-label"
+              data-active={p.id === here}
+              // San Miguel, Asunción and La Granja sit close together, so their labels go to different sides.
+              data-side={p.id === "smi" ? "right" : p.id === "scl" ? "left" : undefined}
+              style={{ positionAnchor: `--cobe-${p.id}`, opacity: `var(--cobe-visible-${p.id}, 0)` } as React.CSSProperties}
+            >
+              {p.flag} {p.city}
             </span>
           ))}
+          <div className="pointer-events-none absolute top-1 left-1 font-mono text-[10px] tracking-widest text-slate-500 uppercase sm:text-xs">
+            <span className="text-accent">{String(active + 1).padStart(2, "0")}</span>/{String(stops.length).padStart(2, "0")}
+            <span className="ml-3 text-slate-300 tabular-nums">{fmt.format(Math.round(km))}</span> {kmLabel}
+          </div>
           <div className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 text-center font-mono">
-            <p key={stop.id} className="animate-[fadeUp_.5s_ease] text-sm text-white">
-              {stop.flag} {stop.city} · <span className="text-accent">{stop.country}</span>
+            <p key={stop.id} className="animate-[fadeUp_.5s_ease] text-sm whitespace-nowrap text-white">
+              {stop.flag} {stop.title}
+              {!stop.title.includes(stop.where) && <span className="text-accent"> · {stop.where}</span>}
             </p>
             <p className="mt-1 text-[10px] tracking-widest text-slate-500 uppercase">{dragHint}</p>
           </div>
         </div>
       </div>
 
-      <ol className="relative z-10 space-y-[28vh] pb-[20vh] lg:space-y-[40vh] lg:pt-[12vh] lg:pb-[30vh]">
+      <ol ref={list} className="relative z-10 space-y-[24vh] pb-[20vh] pl-8 lg:space-y-[32vh] lg:pt-[12vh] lg:pb-[30vh]">
+        {/* Route line with a fill that follows the scroll */}
+        <span className="absolute top-0 bottom-0 left-2.5 w-px bg-white/10" aria-hidden="true" />
+        <span className="absolute top-0 left-2.5 w-px origin-top bg-gradient-to-b from-accent to-accent-2" style={{ height: "100%", transform: `scaleY(${fill})` }} aria-hidden="true" />
         {stops.map((s, i) => (
           <li
             key={s.id}
@@ -166,15 +245,23 @@ export default function Journey({ stops, dragHint }: { stops: JourneyStop[]; dra
               items.current[i] = el;
             }}
             data-index={i}
-            className={`card spotlight p-6 transition duration-500 ${i === active ? "border-accent/50 shadow-xl shadow-accent/10" : "opacity-50"}`}
+            className={`card spotlight relative p-6 transition duration-500 ${i === active ? "border-accent/50 bg-ink-900/90 shadow-xl shadow-accent/10" : "opacity-10 lg:opacity-50"}`}
           >
+            <span
+              className={`absolute top-7 -left-[1.95rem] grid h-4 w-4 place-items-center rounded-full border transition duration-500 ${
+                i <= active ? "border-accent bg-accent/30 shadow-[0_0_14px] shadow-accent/60" : "border-white/20 bg-ink-950"
+              }`}
+              aria-hidden="true"
+            >
+              {i === active && <span className="h-1.5 w-1.5 animate-ping rounded-full bg-accent" />}
+            </span>
             <p className="font-mono text-xs tracking-widest text-accent uppercase">
               {String(i + 1).padStart(2, "0")} · {s.span}
             </p>
-            <h3 className="mt-2 font-display text-3xl font-bold text-white">
-              {s.flag} {s.city}
+            <h3 className="mt-2 font-display text-2xl font-bold text-white sm:text-3xl">
+              {s.flag} {s.title}
             </h3>
-            <p className="text-sm text-slate-500">{s.country}</p>
+            {!s.title.includes(s.where) && <p className="text-sm text-slate-500">{s.where}</p>}
             <p className="mt-4 text-slate-300">{s.text}</p>
           </li>
         ))}
