@@ -1,0 +1,38 @@
+---
+import { profile } from "../data/profile";
+
+const links = [
+  { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
+  { href: "#projects", label: "Projects" },
+  { href: "#skills", label: "Skills" },
+  { href: "#contact", label: "Contact" },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink-950/70 backdrop-blur-md">
+  <nav class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <a href="#top" class="font-mono text-sm font-semibold text-white">
+      <span class="text-accent">~/</span>{profile.handle.toLowerCase()}<span class="animate-pulse text-accent">_</span>
+    </a>
+    <ul class="hidden items-center gap-1 md:flex">
+      {
+        links.map((l, i) => (
+          <li>
+            <a href={l.href} class="rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white">
+              <span class="font-mono text-xs text-accent">0{i + 1}.</span> {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a
+      href={profile.socials[1].url}
+      target="_blank"
+      rel="noopener"
+      class="rounded-lg border border-accent/40 px-3 py-1.5 font-mono text-xs text-accent transition hover:bg-accent/10"
+    >
+      LinkedIn ↗
+    </a>
+  </nav>
+</header>

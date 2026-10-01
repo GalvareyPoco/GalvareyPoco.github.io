@@ -1,0 +1,15 @@
+[
+  {
+    "id": "utcd",
+    "school": "UTCD",
+    "degree": "Computer Engineering",
+    "start": "2015",
+    "end": "2021"
+  },
+  {
+    "id": "laureano-romero",
+    "school": "Colegio Nacional \"Don Laureano Romero Ortiz\"",
+    "degree": "High-school diploma, Business Administration",
+    "end": "2014"
+  }
+]

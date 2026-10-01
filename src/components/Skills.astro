@@ -1,0 +1,25 @@
+---
+import { skillGroups, operatingSystems } from "../data/skills";
+import SectionHeading from "./SectionHeading.astro";
+---
+
+<section id="skills" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
+  <SectionHeading index="04" kicker="toolbox" title="Skills & technologies" />
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      skillGroups.map((g) => (
+        <div class="reveal card p-5 transition hover:border-accent/30">
+          <p class="mb-4 font-mono text-xs uppercase tracking-widest text-accent">{g.name}</p>
+          <ul class="flex flex-wrap gap-1.5">
+            {g.items.map((s) => (
+              <li class="rounded-md border border-white/8 bg-white/[0.03] px-2 py-1 text-sm text-slate-300">{s}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+  <p class="reveal mt-8 font-mono text-xs text-slate-500">
+    Daily drivers: {operatingSystems.join(" · ")}
+  </p>
+</section>

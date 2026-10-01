@@ -1,0 +1,113 @@
+[
+  {
+    "id": "itti",
+    "role": "Full-Stack Developer",
+    "company": "ITTI",
+    "companyUrl": "https://www.itti.digital",
+    "location": "Asunción",
+    "start": "Mar 2025",
+    "current": true,
+    "highlights": [
+      "Built payment terminal software for a new POS product, from early prototyping through production rollout.",
+      "Developed native device integrations and the EMV payment flow.",
+      "Implemented secure terminal configuration and device-to-backend communication.",
+      "Built the POS frontend, and ran security and performance tests to find and fix issues."
+    ]
+  },
+  {
+    "id": "happyliving",
+    "role": "Chief Technology Officer",
+    "company": "Happy Living",
+    "companyUrl": "https://happyliving.lat",
+    "location": "Asunción",
+    "start": "Aug 2024",
+    "current": true,
+    "highlights": [
+      "Leading the React Native app for building management.",
+      "Migrated the backend from .NET to Go microservices and integrated an AI chatbot for reservations.",
+      "Run the whole platform on our own VPS: Docker, Traefik, domains, S3-compatible storage, backups and CI/CD.",
+      "Set up Novu, Resend and Expo push notifications, with PostHog for product analytics."
+    ]
+  },
+  {
+    "id": "impossible-games",
+    "role": "Full-Stack Developer",
+    "company": "Impossible Games",
+    "companyUrl": "https://impossiblegames.fun",
+    "location": "Asunción",
+    "start": "Aug 2023",
+    "current": true,
+    "highlights": [
+      "Building Car'd, a card-based puzzle game with cars moving on grids.",
+      "Self-hosting the studio's tools and services."
+    ]
+  },
+  {
+    "id": "rebuscate",
+    "role": "Co-founder & CTO",
+    "company": "Rebuscate",
+    "companyUrl": "https://rebuscate.com",
+    "location": "Asunción",
+    "start": "Sep 2022",
+    "current": true,
+    "highlights": [
+      "Built a price comparison platform for supermarkets and pharmacies: React Native app, Next.js site, PostgreSQL backend.",
+      "Designed the product-matching algorithm and the Python/Go scrapers and crawlers that feed it.",
+      "Built AI search on a self-hosted Qdrant database with our own embedding service, covering image, text and combined queries.",
+      "Self-host everything on our own VPS, from domains and routing to storage and backups."
+    ]
+  },
+  {
+    "id": "vert-run",
+    "role": "Frontend Developer",
+    "company": "Vert.run",
+    "companyUrl": "https://vert.run",
+    "location": "Asunción",
+    "start": "Jan 2024",
+    "end": "Mar 2025",
+    "highlights": [
+      "Migrated the entire mobile platform to React Native.",
+      "Refactored the website and built AI features on AWS (Lambda, DynamoDB, Cognito, Bedrock)."
+    ]
+  },
+  {
+    "id": "posibillian",
+    "role": "Unity Developer",
+    "company": "Posibillian Tech",
+    "location": "Asunción",
+    "start": "Mar 2022",
+    "end": "Aug 2023"
+  },
+  {
+    "id": "kuatiapo",
+    "role": "IT Support Technician",
+    "company": "Kuatiapo S.A.",
+    "location": "Fernando de la Mora",
+    "start": "Apr 2020",
+    "end": "Jun 2022"
+  },
+  {
+    "id": "lina",
+    "role": "Computer Science Teacher",
+    "company": "Centro de Formación y Capacitación Laboral \"Lina\"",
+    "location": "San Juan Bautista, Misiones",
+    "start": "Feb 2018",
+    "end": "Nov 2018"
+  },
+  {
+    "id": "sandivel",
+    "role": "IT Director",
+    "company": "Parador Restaurant Sandivel",
+    "location": "San Miguel, Misiones",
+    "start": "Apr 2016",
+    "end": "Dec 2017"
+  },
+  {
+    "id": "mapfre",
+    "role": "Office Assistant",
+    "company": "MAPFRE",
+    "location": "Asunción",
+    "start": "Nov 2014",
+    "end": "Feb 2015"
+  }
+]

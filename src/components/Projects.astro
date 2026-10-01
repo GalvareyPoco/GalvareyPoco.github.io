@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content";
+import SectionHeading from "./SectionHeading.astro";
+import ProjectGrid, { type ProjectCard } from "./ProjectGrid";
+
+const entries = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+
+// Highlights are the "- " bullet lines of each project's Markdown body.
+const projects: ProjectCard[] = entries.map(({ id, data, body }) => ({
+  id,
+  ...data,
+  highlights: (body ?? "")
+    .split("\n")
+    .filter((l) => l.trimStart().startsWith("- "))
+    .map((l) => l.trimStart().slice(2).trim()),
+}));
+---
+
+<section id="projects" class="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6">
+  <SectionHeading index="03" kicker="things I've built" title="Selected projects" />
+  <div class="reveal">
+    <ProjectGrid client:visible projects={projects} />
+  </div>
+</section>
