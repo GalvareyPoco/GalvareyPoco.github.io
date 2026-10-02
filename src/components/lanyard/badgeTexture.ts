@@ -16,13 +16,20 @@ export type BadgeInfo = {
 };
 
 export const BADGE_PX = { w: 800, h: 1125 };
+/** The faces are drawn at twice the layout size so text stays crisp on high-density screens. */
+const FACE_SCALE = 2;
 
-function canvas(w: number, h: number) {
+function canvas(w: number, h: number, scale = 1) {
   const c = document.createElement("canvas");
-  c.width = w;
-  c.height = h;
-  return [c, c.getContext("2d")!] as const;
+  c.width = w * scale;
+  c.height = h * scale;
+  const ctx = c.getContext("2d")!;
+  ctx.scale(scale, scale);
+  return [c, ctx] as const;
 }
+
+/** Fonts the badge uses; the canvas silently falls back to a system font if they are not loaded yet. */
+export const BADGE_FONTS = ["700 76px 'Space Grotesk'", "500 36px 'Space Grotesk'", "600 32px 'JetBrains Mono'", "400 24px 'JetBrains Mono'"];
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   ctx.beginPath();
@@ -90,7 +97,7 @@ function cover(ctx: CanvasRenderingContext2D, img: HTMLImageElement, x: number, 
 
 export function drawFront(info: BadgeInfo, photo: HTMLImageElement | null, accent: string, accent2: string) {
   const { w, h } = BADGE_PX;
-  const [c, ctx] = canvas(w, h);
+  const [c, ctx] = canvas(w, h, FACE_SCALE);
   background(ctx, w, h, accent, accent2);
   ctx.textBaseline = "top";
   ctx.textAlign = "center";
@@ -183,7 +190,7 @@ export function drawFront(info: BadgeInfo, photo: HTMLImageElement | null, accen
 
 export function drawBack(info: BadgeInfo, accent: string, accent2: string) {
   const { w, h } = BADGE_PX;
-  const [c, ctx] = canvas(w, h);
+  const [c, ctx] = canvas(w, h, FACE_SCALE);
   background(ctx, w, h, accent2, accent);
   ctx.textBaseline = "top";
   ctx.font = "600 30px 'JetBrains Mono', monospace";
@@ -221,7 +228,7 @@ export function drawBack(info: BadgeInfo, accent: string, accent2: string) {
 
 /** One tile of the strap; the material repeats it along the band. */
 export function drawStrap(name: string, accent: string) {
-  const [c, ctx] = canvas(512, 64);
+  const [c, ctx] = canvas(512, 64, FACE_SCALE);
   ctx.fillStyle = accent;
   ctx.fillRect(0, 0, 512, 64);
   ctx.fillStyle = "rgba(7,9,15,0.85)";

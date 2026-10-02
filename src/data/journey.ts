@@ -2,7 +2,7 @@ import type { Lang, Localized } from "../i18n";
 
 // Galvarey's path, in order. Each chapter points at a place on the globe; the globe draws the route up to the
 // chapter you're reading.
-type Place = { id: string; city: string; country: Localized; location: [number, number]; flag: string };
+type Place = { id: string; city: string | Localized; country: Localized; location: [number, number]; flag: string };
 
 const places: Record<string, Place> = {
   smi: {
@@ -21,7 +21,7 @@ const places: Record<string, Place> = {
   },
   gva: {
     id: "gva",
-    city: "Genève",
+    city: { en: "Geneva", es: "Ginebra", fr: "Genève" },
     country: { en: "Switzerland", es: "Suiza", fr: "Suisse" },
     location: [46.2044, 6.1432],
     flag: "🇨🇭",
@@ -34,6 +34,8 @@ const places: Record<string, Place> = {
     flag: "🇵🇾",
   },
 };
+
+const cityName = (p: Place, lang: Lang) => (typeof p.city === "string" ? p.city : p.city[lang]);
 
 // `where` replaces the "city, country" line when the exact town doesn't matter.
 type Chapter = { place: keyof typeof places; title?: Localized; where?: Localized; span: Localized; text: Localized };
@@ -113,18 +115,18 @@ export const journeyFor = (lang: Lang) => {
     return {
       id: `${p.id}-${i}`,
       placeId: p.id,
-      title: c.title?.[lang] ?? p.city,
-      city: p.city,
+      title: c.title?.[lang] ?? cityName(p, lang),
+      city: cityName(p, lang),
       country: p.country[lang],
       location: p.location,
       flag: p.flag,
-      where: c.where?.[lang] ?? (c.title ? `${p.city}, ${p.country[lang]}` : p.country[lang]),
+      where: c.where?.[lang] ?? (c.title ? `${cityName(p, lang)}, ${p.country[lang]}` : p.country[lang]),
       span: c.span[lang],
       text: c.text[lang],
       km: Math.round(total / 100) * 100,
     };
   });
 };
-export const placesFor = (lang: Lang) => Object.values(places).map((p) => ({ id: p.id, city: p.city, country: p.country[lang], location: p.location, flag: p.flag }));
+export const placesFor = (lang: Lang) => Object.values(places).map((p) => ({ id: p.id, city: cityName(p, lang), country: p.country[lang], location: p.location, flag: p.flag }));
 export type JourneyStop = ReturnType<typeof journeyFor>[number];
 export type JourneyPlace = ReturnType<typeof placesFor>[number];
