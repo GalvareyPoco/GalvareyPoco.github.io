@@ -2,7 +2,7 @@
 // - mortero: a wooden mortar and pestle for crushing the yuyos (mint, cedrón...)
 // - guampa: a black horn with engraved silver rims and a side ring, yerba heaped on one side, and a steel bombilla
 //   with a knob and a bent mouthpiece
-// - jarra: a frosted glass pitcher full of cold water, ice and mint
+// - jarra: a clear glass pitcher with a narrow neck and a round belly, full of cold water, ice and mint
 // The guampa and jarra art lives in ./art (generated from the approved drawings); this file adds what moves.
 
 import { BOMBILLA_PATH, GUAMPA_BACK, GUAMPA_FRONT, JAR_BODY, JAR_CONTENTS, JAR_DEFS, JAR_GLASS, JAR_HANDLE, JAR_TINT, JAR_WATER_TOP } from "./art";
@@ -76,7 +76,7 @@ export default function Scene(p: SceneState) {
       ))}
       <ellipse cx="70" cy="291" rx="34" ry="3.5" fill="#000" opacity="0.55" />
       <ellipse cx="184" cy="291" rx="24" ry="4" fill="#000" opacity="0.55" />
-      <ellipse cx={340 - 50 * tilt} cy="291" rx={52 - 18 * tilt} ry="4.5" fill="#000" opacity={0.55 - 0.3 * tilt} />
+      <ellipse cx={328 - 50 * tilt} cy="291" rx={50 - 18 * tilt} ry="4.5" fill="#000" opacity={0.55 - 0.3 * tilt} />
 
       {/* HUD */}
       <g fontFamily="JetBrains Mono, monospace" fontSize="9" fill="#94a3b8">
@@ -164,7 +164,7 @@ export default function Scene(p: SceneState) {
 
       {/* ── Jarra ── a glass pitcher; it tilts around its pour lip, which ends right above the guampa */}
       <g transform={`translate(${-85 * tilt} ${12 * tilt}) rotate(${-62 * tilt} 290 98)`}>
-        <g transform="translate(263.36 78.64) scale(0.88)">
+        <g transform="translate(252.8 78.64) scale(0.88)">
           <defs dangerouslySetInnerHTML={{ __html: JAR_DEFS }} />
           <g dangerouslySetInnerHTML={{ __html: JAR_HANDLE }} />
           <g clipPath="url(#tj-c)">
