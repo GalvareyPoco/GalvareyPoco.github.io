@@ -35,7 +35,8 @@ The site is in English (`/`), Spanish (`/es/`) and French (`/fr/`). Every text l
 - **3D lanyard badge** (`src/components/lanyard/`): three.js + Rapier physics, adapted from React Bits' Lanyard. Downloads lazily after the intro; reduced motion or no WebGL gets a static badge. The photo is `public/galvarey.jpg`.
 - **Terminal** (`src/components/Terminal.tsx`): type `help`. Commands can switch the color theme (`src/lib/theme.ts`, CSS in `global.css`; tereré is the default).
 - **Effects** (`src/lib/effects.ts`): scroll reveal, text decrypt, cursor spotlight and scroll progress.
-- **Easter eggs** (`src/lib/eggs/`): the Konami code (↑ ↑ ↓ ↓ ← → ← → B A) plays them one after another: the page falls apart, a secret level that unlocks a gold theme, Skill Invaders, 8-bit mode, a tereré flood and matrix rain. The ⌘K menu runs any of them directly.
+- **Easter eggs** (`src/lib/eggs/`): the Konami code (↑ ↑ ↓ ↓ ← → ← → B A) plays them one after another: the page falls apart, a secret level, Skill Invaders, shy buttons, a black hole, 8-bit mode, party mode, a tereré flood and a barrel roll. The ⌘K menu runs any of them directly. Text lives in `strings.ts`.
+- **Dodge field** (`src/lib/dodge.ts`): elements with `data-dodge` slide away from the cursor a few times, then give up.
 
 ## Deploy
 

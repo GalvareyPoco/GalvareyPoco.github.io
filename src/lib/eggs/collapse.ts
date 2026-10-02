@@ -1,10 +1,9 @@
 // "The page falls apart": everything on screen shakes loose and falls with real physics. Pieces can be grabbed
 // and thrown, and "Rebuild" flies them back into place. Reuses matter-js from the falling skills.
 import type { EggStrings } from "./strings";
+import { hold, visiblePieces } from "./pieces";
 
-const PIECES = "h1, h2, h3, h4, p, a, button, img, li, .card, [data-chip], canvas, svg, kbd";
-
-type Piece = { el: HTMLElement; body: import("matter-js").Body; cx: number; cy: number; style: string };
+type Piece = { el: HTMLElement; body: import("matter-js").Body; cx: number; cy: number; restore: () => void };
 
 export default async function collapse(t: EggStrings) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -12,21 +11,7 @@ export default async function collapse(t: EggStrings) {
   const W = innerWidth;
   const H = innerHeight;
 
-  // The biggest blocks on screen that aren't inside another chosen block, so each piece moves as one.
-  const chosen: HTMLElement[] = [];
-  for (const el of document.querySelectorAll<HTMLElement>(PIECES)) {
-    if (chosen.length >= 80 || chosen.some((c) => c.contains(el)) || el.closest("[data-egg-ui]")) continue;
-    const r = el.getBoundingClientRect();
-    if (r.width < 6 || r.height < 6 || r.bottom < 0 || r.top > H || r.right < 0 || r.left > W) continue;
-    if (r.width * r.height > W * H * 0.3) continue;
-    if (getComputedStyle(el).visibility === "hidden") continue;
-    // Skip things covered by something else (the pinned hero sits behind the sections that scroll over it).
-    const x = Math.min(W - 1, Math.max(0, r.left + r.width / 2));
-    const y = Math.min(H - 1, Math.max(0, r.top + Math.min(r.height / 2, 20)));
-    const top = document.elementFromPoint(x, y);
-    if (!top || !(el.contains(top) || top.contains(el))) continue;
-    chosen.push(el);
-  }
+  const chosen = visiblePieces();
   if (!chosen.length) return;
 
   const html = document.documentElement;
@@ -36,9 +21,7 @@ export default async function collapse(t: EggStrings) {
   const engine = Engine.create();
   engine.gravity.y = 1.2;
   const pieces: Piece[] = chosen.map((el) => {
-    const style = el.getAttribute("style") ?? "";
-    // Transforms don't apply to inline boxes.
-    if (getComputedStyle(el).display === "inline") el.style.display = "inline-block";
+    const restore = hold(el);
     const r = el.getBoundingClientRect();
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
@@ -50,7 +33,7 @@ export default async function collapse(t: EggStrings) {
     });
     el.style.transition = "none";
     el.style.willChange = "transform";
-    return { el, body, cx, cy, style };
+    return { el, body, cx, cy, restore };
   });
 
   const wall = 200;
@@ -123,10 +106,7 @@ export default async function collapse(t: EggStrings) {
         el.style.transform = "translate(0px, 0px) rotate(0rad)";
       }
       setTimeout(() => {
-        for (const { el, style } of pieces) {
-          if (style) el.setAttribute("style", style);
-          else el.removeAttribute("style");
-        }
+        for (const p of pieces) p.restore();
         html.style.overflow = overflow;
         done();
       }, 1150);

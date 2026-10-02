@@ -1,8 +1,8 @@
-// "Secret level": a fake hacking sequence types itself out, flashes ACCESS GRANTED and unlocks a hidden gold theme
-// that stays on (the theme button cycles back to the normal ones). Click or Esc skips to the end.
+// "Secret level": a fake hacking sequence types itself out and flashes ACCESS GRANTED. When the terminal closes,
+// the page glitches and every heading and line of text on screen decrypts itself again. Click or Esc skips ahead.
 import { toast } from "./toast";
 import { note } from "./chip";
-import { setTheme } from "../theme";
+import { scramble } from "../effects";
 import type { EggStrings } from "./strings";
 
 const wait = (ms: number, skip: { on: boolean }) => (skip.on ? Promise.resolve() : new Promise((r) => setTimeout(r, ms)));
@@ -57,10 +57,23 @@ export default async function breach(t: EggStrings) {
   [523, 659, 784, 1047].forEach((f, k) => note(f, 0.12, { at: k * 0.09, vol: 0.05 }));
   await new Promise((r) => setTimeout(r, 1500));
 
-  setTheme("gold");
   removeEventListener("keydown", onKey);
   box.classList.remove("is-in");
   await new Promise((r) => setTimeout(r, 400));
   box.remove();
+
+  // The "hacked" page: a glitch pass, then all plain text on screen decrypts.
+  const html = document.documentElement;
+  html.classList.add("egg-hacked");
+  const H = innerHeight;
+  for (const el of document.querySelectorAll<HTMLElement>("h1, h2, h3, h4, p, li, a, button, span")) {
+    // Plain text only, and nothing React renders or other effects keep rewriting.
+    if (el.children.length || !el.textContent?.trim() || el.closest("[data-egg-ui], astro-island, [data-rotate]")) continue;
+    const r = el.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > H || !r.width) continue;
+    scramble(el, 900 + Math.random() * 900);
+  }
   toast(t.unlocked, 3200);
+  await new Promise((r) => setTimeout(r, 1900));
+  html.classList.remove("egg-hacked");
 }
