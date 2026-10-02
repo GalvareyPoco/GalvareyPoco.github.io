@@ -10,7 +10,7 @@ export type PaletteLabels = {
   lang: string;
   actions: string;
   replay: string;
-  matrix: string;
+  eggs: string;
   drop: string;
   copy: string;
   copied: string;
@@ -26,11 +26,13 @@ export default function CommandPalette({
   sections,
   languages,
   links,
+  eggs,
 }: {
   labels: PaletteLabels;
   sections: { id: string; label: string; n: string }[];
   languages: { code: string; label: string; href: string; current: boolean }[];
   links: { label: string; url: string }[];
+  eggs: { id: string; label: string }[];
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -52,7 +54,6 @@ export default function CommandPalette({
       ...themes.map((t) => ({ group: labels.theme, label: t, icon: "◐", keywords: "theme color", run: () => setTheme(t) })),
       ...languages.filter((l) => !l.current).map((l) => ({ group: labels.lang, label: l.label, icon: l.code.toUpperCase(), keywords: "language idioma langue", run: () => location.assign(l.href) })),
       { group: labels.actions, label: labels.replay, icon: "🧉", keywords: "terere intro", run: () => dispatchEvent(new Event("terere:replay")) },
-      { group: labels.actions, label: labels.matrix, icon: "⌁", keywords: "matrix rain easter egg", run: () => dispatchEvent(new Event("matrix")) },
       {
         group: labels.actions,
         label: labels.drop,
@@ -73,9 +74,16 @@ export default function CommandPalette({
           return labels.copied;
         },
       },
+      ...eggs.map((e) => ({
+        group: labels.eggs,
+        label: e.label,
+        icon: "✦",
+        keywords: `easter egg konami secret ${e.id}`,
+        run: () => void window.dispatchEvent(new CustomEvent("egg", { detail: e.id })),
+      })),
       ...links.map((l) => ({ group: "Links", label: l.label, icon: "↗", keywords: "social", run: () => void window.open(l.url, "_blank", "noopener") })),
     ],
-    [labels, sections, languages, links],
+    [labels, sections, languages, links, eggs],
   );
 
   const filtered = useMemo(() => {

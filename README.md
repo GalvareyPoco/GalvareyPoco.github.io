@@ -33,8 +33,9 @@ The site is in English (`/`), Spanish (`/es/`) and French (`/fr/`). Every text l
 - **Command menu** (`src/components/CommandPalette.tsx`): ⌘K, Ctrl+K or `/` to jump to sections, switch theme or language, and run the easter eggs.
 - **Falling skills** (`src/lib/gravity.ts`): "Drop them" in Skills lets the chips fall and be thrown around (matter-js, loaded on first use).
 - **3D lanyard badge** (`src/components/lanyard/`): three.js + Rapier physics, adapted from React Bits' Lanyard. Downloads lazily after the intro; reduced motion or no WebGL gets a static badge. The photo is `public/galvarey.jpg`.
-- **Terminal** (`src/components/Terminal.tsx`): type `help`. Commands can switch the color theme (`src/lib/theme.ts`, CSS in `global.css`).
-- **Effects** (`src/lib/effects.ts`): scroll reveal, text decrypt, cursor spotlight, scroll progress and the Konami-code matrix rain.
+- **Terminal** (`src/components/Terminal.tsx`): type `help`. Commands can switch the color theme (`src/lib/theme.ts`, CSS in `global.css`; tereré is the default).
+- **Effects** (`src/lib/effects.ts`): scroll reveal, text decrypt, cursor spotlight and scroll progress.
+- **Easter eggs** (`src/lib/eggs/`): the Konami code (↑ ↑ ↓ ↓ ← → ← → B A) plays them one after another: the page falls apart, a secret level that unlocks a gold theme, Skill Invaders, 8-bit mode, a tereré flood and matrix rain. The ⌘K menu runs any of them directly.
 
 ## Deploy
 

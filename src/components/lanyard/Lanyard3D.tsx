@@ -20,7 +20,7 @@ import {
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import * as THREE from "three";
-import { drawBack, drawFront, drawPixels, drawStrap, type BadgeInfo } from "./badgeTexture";
+import { BADGE_FONTS, drawBack, drawFront, drawPixels, drawStrap, type BadgeInfo } from "./badgeTexture";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -64,7 +64,7 @@ export default function Lanyard3D({ info, accent, accent2, onReady }: Props) {
     <div ref={wrap} className="absolute inset-0">
       <Canvas
         camera={{ position: [0, 0, 13], fov: 25 }}
-        dpr={[1, isMobile ? 1.5 : 2]}
+        dpr={[1, 2]}
         gl={{ alpha: true, antialias: !isMobile }}
         onCreated={({ gl }) => {
           gl.setClearColor(new THREE.Color(0x000000), 0);
@@ -116,13 +116,24 @@ function faceGeometry(shape: THREE.Shape) {
   return g;
 }
 
-function canvasTexture(canvas: HTMLCanvasElement, repeat = false) {
+function canvasTexture(canvas: HTMLCanvasElement, anisotropy: number, repeat = false) {
   const t = new THREE.CanvasTexture(canvas);
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 8;
+  t.anisotropy = anisotropy;
   if (repeat) t.wrapS = t.wrapT = THREE.RepeatWrapping;
   return t;
 }
+
+/**
+ * The card is usually drawn a bit smaller than its texture, so the GPU blends in the next, blurrier mipmap.
+ * A negative LOD bias keeps sampling the sharper level, which keeps the small text on the badge crisp.
+ */
+const sharpen = (shader: THREE.WebGLProgramParametersWithUniforms) => {
+  shader.fragmentShader = shader.fragmentShader.replace(
+    "#include <map_fragment>",
+    THREE.ShaderChunk.map_fragment.replace("texture2D( map, vMapUv )", "texture2D( map, vMapUv, -0.8 )"),
+  );
+};
 
 function Band({
   isMobile,
@@ -162,6 +173,7 @@ function Band({
   }, [shape]);
   const face = useMemo(() => faceGeometry(shape), [shape]);
 
+  const anisotropy = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
   // Textures are drawn on canvases; the photo loads asynchronously, so redraw when it arrives.
   const [faces, setFaces] = useState<{ front: THREE.Texture; back: THREE.Texture; strap: THREE.Texture } | null>(null);
   useEffect(() => {
@@ -176,17 +188,18 @@ function Band({
         prev?.back.dispose();
         prev?.strap.dispose();
         return {
-          front: canvasTexture(drawFront(info, photo, accent, accent2)),
-          back: canvasTexture(drawBack(info, accent, accent2)),
-          strap: canvasTexture(drawStrap(info.name, accent), true),
+          front: canvasTexture(drawFront(info, photo, accent, accent2), anisotropy),
+          back: canvasTexture(drawBack(info, accent, accent2), anisotropy),
+          strap: canvasTexture(drawStrap(info.name, accent), anisotropy, true),
         };
       });
     };
-    Promise.all([img.decode().then(() => img).catch(() => null), document.fonts?.ready]).then(([photo]) => build(photo));
+    const fonts = Promise.all(BADGE_FONTS.map((f) => document.fonts?.load(f))).catch(() => null);
+    Promise.all([img.decode().then(() => img).catch(() => null), fonts]).then(([photo]) => build(photo));
     return () => {
       alive = false;
     };
-  }, [info, accent, accent2]);
+  }, [info, accent, accent2, anisotropy]);
 
   // PixelCard overlay: a tiny canvas drawn with nearest filtering so each texel reads as a chunky pixel.
   const pixels = useMemo(() => {
@@ -342,6 +355,7 @@ function Band({
                   {/* Iridescence gives the ProfileCard-style holographic foil as the card turns in the light. */}
                   <meshPhysicalMaterial
                     map={faces.front}
+                    onBeforeCompile={sharpen}
                     roughness={0.45}
                     metalness={0.2}
                     clearcoat={isMobile ? 0 : 1}
@@ -355,7 +369,7 @@ function Band({
                   <meshBasicMaterial map={pixels.tex} transparent blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
                 </mesh>
                 <mesh geometry={face} position={[0, 0, -0.031]} rotation={[0, Math.PI, 0]}>
-                  <meshPhysicalMaterial map={faces.back} roughness={0.55} metalness={0.15} clearcoat={isMobile ? 0 : 1} clearcoatRoughness={0.15} />
+                  <meshPhysicalMaterial map={faces.back} onBeforeCompile={sharpen} roughness={0.55} metalness={0.15} clearcoat={isMobile ? 0 : 1} clearcoatRoughness={0.15} />
                 </mesh>
               </>
             )}

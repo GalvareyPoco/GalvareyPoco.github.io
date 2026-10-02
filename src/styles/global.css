@@ -10,12 +10,16 @@
   --color-ink-800: #121826;
   --color-ink-700: #1c2436;
   --color-ink-600: #2a3550;
-  --color-accent: #34d399;
-  --color-accent-2: #22d3ee;
+  --color-accent: #a3e635;
+  --color-accent-2: #facc15;
   --color-warm: #fbbf24;
 }
 
-/* Color themes, switched from the nav or the terminal (`theme <name>`). "matrix" is the default above. */
+/* Color themes, switched from the nav or the terminal (`theme <name>`). "terere" is the default above. */
+html[data-theme="matrix"] {
+  --color-accent: #34d399;
+  --color-accent-2: #22d3ee;
+}
 html[data-theme="neon"] {
   --color-accent: #f472b6;
   --color-accent-2: #a78bfa;
@@ -24,9 +28,10 @@ html[data-theme="amber"] {
   --color-accent: #fbbf24;
   --color-accent-2: #fb923c;
 }
-html[data-theme="terere"] {
-  --color-accent: #a3e635;
-  --color-accent-2: #facc15;
+/* Secret theme, unlocked by the "Secret level" easter egg. */
+html[data-theme="gold"] {
+  --color-accent: #f5c84c;
+  --color-accent-2: #fff1c1;
 }
 
 @layer base {
@@ -372,4 +377,182 @@ html[data-intro] .target-cursor {
 }
 @supports not (anchor-name: --a) {
   .globe-label { display: none; }
+}
+
+/* Easter eggs (src/lib/eggs) */
+.egg-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 99;
+  max-width: calc(100vw - 2rem);
+  transform: translate(-50%, 1rem);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  border: 1px solid color-mix(in oklab, var(--color-accent) 50%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-ink-900) 92%, transparent);
+  padding: 0.6rem 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 10px 30px -10px color-mix(in oklab, var(--color-accent) 50%, transparent);
+  pointer-events: none;
+}
+.egg-toast.is-in {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.egg-button {
+  position: fixed;
+  left: 50%;
+  top: 5rem;
+  z-index: 93;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--color-accent);
+  padding: 0.7rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-ink-950);
+  box-shadow: 0 0 30px color-mix(in oklab, var(--color-accent) 60%, transparent);
+  cursor: pointer;
+}
+.egg-button.static {
+  position: static;
+  transform: none;
+  margin: 0.4rem;
+}
+.egg-button.ghost {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgb(255 255 255 / 0.25);
+  box-shadow: none;
+}
+.egg-breach {
+  position: fixed;
+  inset: 0;
+  z-index: 96;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem max(1.25rem, 8vw);
+  background: rgb(0 0 0 / 0.92);
+  opacity: 0;
+  transition: opacity 0.35s;
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 2.2vw, 1rem);
+  line-height: 1.7;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+.egg-breach.is-in {
+  opacity: 1;
+}
+.egg-breach pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font: inherit;
+}
+.egg-breach .cmd {
+  color: var(--color-accent);
+}
+.egg-breach .dim {
+  color: #64748b;
+}
+.egg-granted {
+  margin-top: 1.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 5.5rem);
+  font-weight: 700;
+  color: var(--color-accent);
+  text-shadow: 0 0 40px color-mix(in oklab, var(--color-accent) 70%, transparent);
+  animation: glitch 0.5s steps(2) 3, fadeUp 0.3s ease;
+}
+.egg-arcade {
+  position: fixed;
+  inset: 0;
+  z-index: 96;
+  background: radial-gradient(circle at 50% 120%, color-mix(in oklab, var(--color-accent) 18%, transparent), transparent 60%), var(--color-ink-950);
+  touch-action: none;
+}
+.egg-arcade canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.egg-arcade-quit {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+}
+.egg-arcade-end {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgb(7 9 15 / 0.7);
+  font-family: var(--font-mono);
+  color: #cbd5e1;
+  text-align: center;
+}
+.egg-arcade-end[hidden] {
+  display: none;
+}
+.egg-arcade-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 6vw, 3.5rem);
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* 8-bit mode: pixel font, square corners, hard drop shadows and pixelated photos. */
+html.eightbit {
+  font-size: 13px;
+  --font-sans: "Press Start 2P", monospace;
+  --font-display: "Press Start 2P", monospace;
+  --font-mono: "Press Start 2P", monospace;
+}
+html.eightbit body {
+  line-height: 1.9;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+}
+html.eightbit body *:not(svg, svg *) {
+  border-radius: 0 !important;
+  letter-spacing: 0 !important;
+}
+html.eightbit h1,
+html.eightbit h2 {
+  line-height: 1.25 !important;
+  text-shadow: 4px 4px 0 color-mix(in oklab, var(--color-accent) 45%, #000);
+}
+html.eightbit .card,
+html.eightbit a[class*="rounded"],
+html.eightbit button[class*="rounded"] {
+  box-shadow: 5px 5px 0 color-mix(in oklab, var(--color-accent) 55%, #000) !important;
+  border-width: 2px;
+}
+html.eightbit img {
+  filter: url(#pixelate);
+  image-rendering: pixelated;
+}
+html.eightbit body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 89;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.18) 0 2px, transparent 2px 4px);
 }

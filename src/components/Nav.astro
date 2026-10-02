@@ -2,6 +2,7 @@
 import { profile } from "../data/profile";
 import { type Lang, langs, languages, homePath, useTranslations } from "../i18n";
 import CommandPalette from "./CommandPalette";
+import { EGGS, eggStrings } from "../lib/eggs/strings";
 
 interface Props {
   lang: Lang;
@@ -19,6 +20,8 @@ const links = [
   { n: "07", href: "#console", label: t("nav.console") },
   { n: "08", href: "#contact", label: t("nav.contact") },
 ];
+const eggs = eggStrings(lang);
+const paletteEggs = EGGS.map((id) => ({ id, label: eggs.names[id] }));
 const paletteLabels = {
   placeholder: t("palette.placeholder"),
   go: t("palette.go"),
@@ -26,7 +29,7 @@ const paletteLabels = {
   lang: t("palette.lang"),
   actions: t("palette.actions"),
   replay: t("palette.replay"),
-  matrix: t("palette.matrix"),
+  eggs: eggs.group,
   drop: t("palette.drop"),
   copy: t("palette.copy"),
   copied: t("palette.copied"),
@@ -52,7 +55,7 @@ const paletteLangs = langs.map((l) => ({ code: l, label: languages[l], href: hom
       {
         links.map((l) => (
           <li>
-            <a href={l.href} class="rounded-lg px-2.5 py-2 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white">
+            <a href={l.href} class="rounded-lg px-2 py-2 text-sm whitespace-nowrap text-slate-400 transition hover:bg-white/5 hover:text-white">
               <span class="font-mono text-xs text-accent">{l.n}.</span> {l.label}
             </a>
           </li>
@@ -65,7 +68,7 @@ const paletteLangs = langs.map((l) => ({ code: l, label: languages[l], href: hom
     </button>
     <button type="button" data-theme-toggle title={t("nav.theme")} aria-label={t("nav.theme")} class="flex items-center gap-1.5 rounded-lg border border-white/10 px-2 py-1 font-mono text-xs text-slate-400 transition hover:text-white">
       <span class="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-accent to-accent-2"></span>
-      <span data-theme-name class="hidden sm:inline">matrix</span>
+      <span data-theme-name class="hidden sm:inline">terere</span>
     </button>
     <ul class="flex items-center rounded-lg border border-white/10 p-0.5 font-mono text-xs" aria-label={t("nav.language")}>
       {
@@ -91,4 +94,4 @@ const paletteLangs = langs.map((l) => ({ code: l, label: languages[l], href: hom
     </div>
   </nav>
 </header>
-<CommandPalette client:idle labels={paletteLabels} sections={paletteSections} languages={paletteLangs} links={[...profile.socials]} />
+<CommandPalette client:idle labels={paletteLabels} sections={paletteSections} languages={paletteLangs} links={[...profile.socials]} eggs={paletteEggs} />
