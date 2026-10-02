@@ -82,15 +82,15 @@
     "highlights": {
       "en": [
         "Building Car'd, a card-based puzzle game with cars moving on grids.",
-        "Self-hosting the studio's tools and services."
+        "Building the studio's tools and services."
       ],
       "es": [
         "Desarrollo Car'd, un juego de puzzles con cartas y autos que se mueven en grillas.",
-        "Autoalojo las herramientas y servicios del estudio."
+        "Construyo las herramientas y servicios del estudio."
       ],
       "fr": [
         "Développement de Car'd, un jeu de réflexion à base de cartes où l'on déplace des voitures sur une grille.",
-        "Auto-hébergement des outils et services du studio."
+        "Développement des outils et services du studio."
       ]
     },
     "order": 4

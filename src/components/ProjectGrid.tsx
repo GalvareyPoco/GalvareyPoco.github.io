@@ -87,14 +87,40 @@ export default function ProjectGrid({ projects, labels }: { projects: ProjectCar
               <p className="mt-3 text-slate-400">{p.summary}</p>
 
               {expanded && (
-                <ul className="mt-4 space-y-2 text-sm text-slate-400">
-                  {p.highlights.map((h) => (
-                    <li key={h} className="flex gap-2">
-                      <span className="text-accent">▹</span>
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul className="mt-4 space-y-2 text-sm text-slate-400">
+                    {p.highlights.map((h) => (
+                      <li key={h} className="flex gap-2">
+                        <span className="text-accent">▹</span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {/* The people this was built with, tagged like mentions */}
+                  {p.collaborators.length > 0 && (
+                    <ul className="relative z-10 mt-4 flex flex-wrap gap-2" aria-label={labels.with}>
+                      {p.collaborators.map((c) => {
+                        const tag = (
+                          <>
+                            <span className="grid h-5 w-5 place-items-center rounded-full bg-accent/20 text-[10px] font-bold text-accent">{c.label[0]}</span>@{c.label}
+                          </>
+                        );
+                        const cls = "inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/5 py-0.5 pr-2.5 pl-0.5 font-mono text-xs text-slate-200";
+                        return (
+                          <li key={c.label}>
+                            {c.url ? (
+                              <a href={c.url} target="_blank" rel="noopener" className={`${cls} transition hover:border-accent hover:text-white`}>
+                                {tag}
+                              </a>
+                            ) : (
+                              <span className={cls}>{tag}</span>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </>
               )}
 
               <ul className="mt-5 flex flex-wrap gap-1.5">
@@ -118,23 +144,6 @@ export default function ProjectGrid({ projects, labels }: { projects: ProjectCar
                     {l.label} ↗
                   </a>
                 ))}
-                {p.collaborators.length > 0 && (
-                  <span className="text-slate-500">
-                    {labels.with}{" "}
-                    {p.collaborators.map((c, i) => (
-                      <span key={c.label}>
-                        {c.url ? (
-                          <a href={c.url} target="_blank" rel="noopener" className="text-slate-400 hover:text-white">
-                            {c.label}
-                          </a>
-                        ) : (
-                          <span className="text-slate-400">{c.label}</span>
-                        )}
-                        {i < p.collaborators.length - 1 ? ", " : ""}
-                      </span>
-                    ))}
-                  </span>
-                )}
               </div>
             </article>
           );

@@ -51,5 +51,5 @@ const t = useTranslations(lang);
 </section>
 
 <footer class="border-t border-white/5 py-8 text-center font-mono text-xs text-slate-600">
-  {t("footer.built")} · © {new Date().getFullYear()} {profile.fullName} · <button type="button" class="hover:text-accent" onclick="dispatchEvent(new Event('terere:replay'))">{t("footer.terere")} 🧉</button>
+  {t("footer.built")} · © {new Date().getFullYear()} {profile.fullName} · <button type="button" class="hover:text-accent" onclick="window.dispatchEvent(new Event('terere:replay'))">{t("footer.terere")} 🧉</button>
 </footer>
