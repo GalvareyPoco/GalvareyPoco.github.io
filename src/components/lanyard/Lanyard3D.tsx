@@ -149,7 +149,7 @@ function Band({
 
   const [vec] = useState(() => new THREE.Vector3());
   const [ang] = useState(() => new THREE.Vector3());
-  const [rot] = useState(() => new THREE.Vector3());
+  const [rot] = useState(() => new THREE.Quaternion());
   const [dir] = useState(() => new THREE.Vector3());
 
   const segmentProps: RigidBodyProps = { type: "dynamic", canSleep: true, colliders: false, angularDamping: 4, linearDamping: 4 };
@@ -204,9 +204,11 @@ function Band({
     // Boot: a ripple from the centre as the card appears.
     pix.current = { ...pix.current, on: true, t: 0, origin: [0.5, 0.45], bootUntil: performance.now() + 1300 };
   }, [faces]);
-  const colors = useMemo(() => [accent, accent2, "#ffffff", accent], [accent, accent2]);
+  const colors = useMemo(() => [accent, accent2], [accent, accent2]);
   const tap = useRef<{ x: number; y: number; t: number } | null>(null);
   const spin = useRef(false);
+  // Which face the card settles on: tapping flips it and it stays there until the next tap.
+  const flipped = useRef(false);
 
   const [curve] = useState(() => {
     const c = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]);
@@ -274,7 +276,8 @@ function Band({
     if (!fixed.current || !band.current) return;
     if (spin.current && !dragged) {
       spin.current = false;
-      card.current.setAngvel({ x: 0, y: 14, z: 0 }, true);
+      flipped.current = !flipped.current;
+      card.current.setAngvel({ x: 0, y: 9, z: 0 }, true);
     }
     for (const ref of [j1, j2]) {
       const l = lerped(ref.current);
@@ -287,9 +290,13 @@ function Band({
     curve.points[2].copy(lerped(j1.current));
     curve.points[3].copy(fixed.current.translation());
     band.current.geometry.setPoints(curve.getPoints(isMobile ? 16 : 32));
+    // Ease the card's yaw toward the chosen face (0 = front, π = back), the short way round.
     ang.copy(card.current.angvel());
     rot.copy(card.current.rotation());
-    card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z }, true);
+    const yaw = 2 * Math.atan2(rot.y, rot.w);
+    const target = flipped.current ? Math.PI : 0;
+    const err = Math.atan2(Math.sin(yaw - target), Math.cos(yaw - target));
+    card.current.setAngvel({ x: ang.x, y: ang.y - Math.sin(err / 2) * 0.25, z: ang.z }, true);
   });
 
   return (

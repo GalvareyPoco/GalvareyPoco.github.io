@@ -60,7 +60,7 @@ const paletteLangs = langs.map((l) => ({ code: l, label: languages[l], href: hom
       }
     </ul>
     <div class="flex items-center gap-2">
-    <button type="button" onclick="dispatchEvent(new Event('palette:open'))" title={t("nav.palette")} aria-label={t("nav.palette")} class="flex items-center gap-1 rounded-lg border border-white/10 px-2 py-1 font-mono text-xs text-slate-400 transition hover:border-accent/50 hover:text-white">
+    <button type="button" onclick="window.dispatchEvent(new Event('palette:open'))" title={t("nav.palette")} aria-label={t("nav.palette")} class="flex items-center gap-1 rounded-lg border border-white/10 px-2 py-1 font-mono text-xs text-slate-400 transition hover:border-accent/50 hover:text-white">
       ⌘K
     </button>
     <button type="button" data-theme-toggle title={t("nav.theme")} aria-label={t("nav.theme")} class="flex items-center gap-1.5 rounded-lg border border-white/10 px-2 py-1 font-mono text-xs text-slate-400 transition hover:text-white">

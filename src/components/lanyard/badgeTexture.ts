@@ -253,15 +253,21 @@ export function drawPixels(
   for (let y = 0; y < H; y++) {
     for (let x = 0; x < W; x++) {
       const i = y * W + x;
+      // Only about a third of the cells take part, so the photo stays readable under a light sparkle.
+      const seed = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1;
+      if (seed < 0.62) continue;
       const d = Math.hypot(x / W - origin[0], (y / H - origin[1]) * (H / W));
       const lit = on && t > d * 0.9;
-      // ease each cell toward lit/unlit; unlit cells fade slower near the origin for a nicer ripple out
-      const target = lit ? 0.35 + 0.65 * Math.abs(Math.sin(t * 6 + i * 1.7)) : 0;
+      // Ease each cell toward lit/unlit; the wave front is brighter than the cells behind it.
+      const front = Math.max(0, 1 - Math.abs(t - d * 0.9) * 4);
+      // After the wave passes, only cells near the pointer keep a soft twinkle.
+      const near = Math.max(0, 1 - d * 2.4);
+      const target = lit ? near * (0.15 + 0.2 * Math.abs(Math.sin(t * 3 + seed * 20))) + 0.45 * front : 0;
       cells[i] += (target - cells[i]) * Math.min(1, dt * (lit ? 10 : 4));
       if (cells[i] > 0.02) {
         alive = true;
-        ctx.globalAlpha = cells[i] * 0.55;
-        ctx.fillStyle = colors[i % colors.length];
+        ctx.globalAlpha = cells[i] * 0.35;
+        ctx.fillStyle = colors[(seed * 100) % colors.length | 0];
         ctx.fillRect(x, y, 1, 1);
       }
     }
