@@ -6,15 +6,22 @@ import { fill, type EggStrings } from "./strings";
 
 const COUNT_KEY = "terere-served";
 
-// A small leather jarra like the intro's, with the tricolor band. Its spout is at the top left.
+// A small glass jarra like the intro's, full of ice and yuyos. Its spout is at the top left.
+const JAR = "M16 14 C17 30 14 38 12 48 C7 74 7 98 12 112 C15 122 24 126 36 126 L64 126 C76 126 85 122 88 112 C93 98 93 74 88 48 C86 38 83 30 84 14 Z";
 const JARRA = `<svg viewBox="0 0 100 130" width="100%" height="100%" aria-hidden="true">
-  <path d="M18 14 Q50 4 82 14 L86 112 Q50 126 14 112 Z" fill="#7a4a24" stroke="#3b220f" stroke-width="3"/>
-  <path d="M16 40 Q50 48 84 40 L84 52 Q50 60 16 52 Z" fill="#d52b1e"/>
-  <path d="M16 52 Q50 60 84 52 L84 62 Q50 70 16 62 Z" fill="#fff"/>
-  <path d="M16 62 Q50 70 84 62 L84 72 Q50 80 16 72 Z" fill="#0038a8"/>
-  <path d="M84 30 Q104 50 86 92" fill="none" stroke="#3b220f" stroke-width="7" stroke-linecap="round"/>
-  <path d="M18 14 Q8 10 4 16" fill="none" stroke="#3b220f" stroke-width="4" stroke-linecap="round"/>
-  <text x="50" y="100" text-anchor="middle" font-family="monospace" font-size="12" fill="#f6e7c8">G·A</text>
+  <defs><clipPath id="flood-jar"><path d="${JAR}"/></clipPath>
+  <linearGradient id="flood-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ecfccb" stop-opacity=".55"/><stop offset=".5" stop-color="#84cc16" stop-opacity=".4"/><stop offset="1" stop-color="#14532d" stop-opacity=".9"/></linearGradient></defs>
+  <path d="M84 24 C104 26 104 92 86 102" fill="none" stroke="#e0f2fe" stroke-opacity=".35" stroke-width="8" stroke-linecap="round"/>
+  <g clip-path="url(#flood-jar)">
+    <rect x="0" y="22" width="100" height="110" fill="url(#flood-water)"/>
+    <path transform="translate(20 60) rotate(0) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#14532d"/><path transform="translate(43 67) rotate(67) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#166534"/><path transform="translate(66 65) rotate(134) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#15803d"/><path transform="translate(31 63) rotate(201) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#3f6212"/><path transform="translate(54 61) rotate(268) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#14532d"/><path transform="translate(77 82) rotate(335) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#166534"/><path transform="translate(42 80) rotate(42) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#15803d"/><path transform="translate(65 78) rotate(109) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#3f6212"/><path transform="translate(30 76) rotate(176) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#14532d"/><path transform="translate(53 74) rotate(243) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#166534"/><path transform="translate(76 95) rotate(310) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#15803d"/><path transform="translate(41 93) rotate(17) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#3f6212"/><path transform="translate(64 91) rotate(84) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#14532d"/><path transform="translate(29 89) rotate(151) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#166534"/><path transform="translate(52 96) rotate(218) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#15803d"/><path transform="translate(75 108) rotate(285) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#3f6212"/><path transform="translate(40 106) rotate(352) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#14532d"/><path transform="translate(63 104) rotate(59) scale(1.6)" d="M0 0 C4 -5 11 -5 15 0 C11 5 4 5 0 0Z" fill="#166534"/>
+    <rect x="24" y="24" width="14" height="14" rx="3" fill="#e0f2fe" fill-opacity=".8" transform="rotate(14 31 31)"/>
+    <rect x="50" y="22" width="15" height="15" rx="3" fill="#e0f2fe" fill-opacity=".8" transform="rotate(-10 57 29)"/>
+  </g>
+  <path d="${JAR}" fill="#f0f9ff" fill-opacity=".08" stroke="#f8fafc" stroke-opacity=".75" stroke-width="2.5"/>
+  <path d="M16 14 Q8 10 4 12 Q8 16 17 22" fill="#f0f9ff" fill-opacity=".3" stroke="#f8fafc" stroke-opacity=".8" stroke-width="2"/>
+  <ellipse cx="50" cy="14" rx="34" ry="5" fill="none" stroke="#f8fafc" stroke-opacity=".85" stroke-width="2.5"/>
+  <path d="M21 26 C20 50 12 80 18 108" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round"/>
 </svg>`;
 
 type Floater = { x: number; kind: "ice" | "leaf"; size: number; phase: number; spin: number; drop: number };

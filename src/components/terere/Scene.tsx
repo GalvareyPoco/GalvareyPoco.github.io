@@ -1,8 +1,8 @@
 // The tereré set, drawn in SVG from real references:
 // - mortero: a wooden mortar and pestle for crushing the yuyos (mint, cedrón...)
-// - guampa: a bull-horn cup with alpaca rims, a leather band with ñandutí lace, yerba heaped on one side
-//   and an alpaca bombilla with a gold mouthpiece
-// - jarra: an insulated jug wrapped in tooled leather with laced edges, a strap handle, ice and yuyos inside
+// - guampa: a straight cup wrapped in croc-embossed leather with a stitched seam, yerba heaped on one side
+//   and a straight steel bombilla
+// - jarra: a clear glass pitcher full of cold water, ice and yuyos, fogged with condensation
 
 export type SceneState = {
   tilt: number; // jarra tilt 0..1
@@ -28,26 +28,6 @@ function Leaf({ x, y, r = 0, s = 1, c = "#22c55e" }: { x: number; y: number; r?:
   );
 }
 
-/** Ñandutí: Paraguayan spider-web lace, a ring of colored petals around a radial web. */
-function Nanduti({ cx, cy, r }: { cx: number; cy: number; r: number }) {
-  const colors = ["#ef4444", "#facc15", "#22c55e", "#3b82f6", "#ec4899", "#f97316"];
-  return (
-    <g>
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#fef3c7" strokeWidth="0.8" opacity="0.9" />
-      <circle cx={cx} cy={cy} r={r * 0.55} fill="none" stroke="#fef3c7" strokeWidth="0.6" opacity="0.8" />
-      {Array.from({ length: 16 }, (_, i) => {
-        const a = (i / 16) * Math.PI * 2;
-        return <line key={i} x1={cx} y1={cy} x2={cx + Math.cos(a) * r} y2={cy + Math.sin(a) * r} stroke="#fef3c7" strokeWidth="0.45" opacity="0.8" />;
-      })}
-      {Array.from({ length: 8 }, (_, i) => {
-        const a = (i / 8) * Math.PI * 2 + 0.2;
-        return <circle key={i} cx={cx + Math.cos(a) * r * 0.78} cy={cy + Math.sin(a) * r * 0.78} r={r * 0.17} fill={colors[i % colors.length]} opacity="0.95" />;
-      })}
-      <circle cx={cx} cy={cy} r={r * 0.18} fill="#facc15" />
-    </g>
-  );
-}
-
 function Ice({ x, y, r = 0, s = 1 }: { x: number; y: number; r?: number; s?: number }) {
   return (
     <g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
@@ -57,6 +37,23 @@ function Ice({ x, y, r = 0, s = 1 }: { x: number; y: number; r?: number; s?: num
   );
 }
 
+// The glass pitcher: a narrow neck that bellies out toward the bottom.
+const JAR = "M298 104 C299 128 296 142 293 160 C287 200 285 240 291 266 C295 282 308 288 324 288 L352 288 C368 288 381 282 385 266 C391 240 389 200 383 160 C380 142 377 128 378 104 Z";
+
+// Yuyos packed in the bottom of the jarra: [x, y, rotation, scale, color]
+const JAR_LEAVES: [number, number, number, number, string][] = Array.from({ length: 26 }, (_, i) => {
+  const greens = ["#14532d", "#166534", "#15803d", "#3f6212", "#4d7c0f", "#16a34a"];
+  const row = Math.floor(i / 6);
+  return [294 + ((i * 37) % 80), 170 + row * 24 + ((i * 13) % 14), (i * 67) % 360, 1.3 + ((i * 7) % 5) / 8, greens[i % greens.length]];
+});
+
+// Drops of condensation on the cold glass, scattered at random (but the same on every render): [x, y, radius]
+const rand = (n: number) => {
+  const x = Math.sin(n * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+};
+const DROPS: [number, number, number][] = Array.from({ length: 40 }, (_, i) => [297 + rand(i) * 84, 114 + rand(i + 99) * 166, 0.6 + rand(i + 7) * 1.3]);
+
 export default function Scene(p: SceneState) {
   const { tilt, flow, level, crush, pound, fly, yuyoIn, sipping, slurp } = p;
   // Pestle rests in the bowl; after each hit it bounces up and comes back down.
@@ -65,30 +62,35 @@ export default function Scene(p: SceneState) {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="h-[46vh] max-h-[400px] w-auto max-w-full" aria-hidden="true">
       <defs>
-        <linearGradient id="tt-horn" x1="0" x2="1">
-          <stop offset="0" stopColor="#1c130b" />
-          <stop offset="0.16" stopColor="#4a2f18" />
-          <stop offset="0.34" stopColor="#b48a58" />
-          <stop offset="0.46" stopColor="#e3cc9e" />
-          <stop offset="0.6" stopColor="#9a6f42" />
-          <stop offset="0.82" stopColor="#3b2715" />
-          <stop offset="1" stopColor="#140d07" />
+        {/* croc-embossed leather: rows of glossy rounded scales, offset like bricks, two sizes */}
+        <pattern id="tt-croc" width="14" height="18" patternUnits="userSpaceOnUse">
+          <rect width="14" height="18" fill="#0f0905" />
+          <rect x="0.8" y="0.8" width="12.4" height="7.6" rx="3.4" fill="#4a2f1d" />
+          <rect x="-6.2" y="9.8" width="12.4" height="7.4" rx="3.4" fill="#3f2818" />
+          <rect x="7.8" y="9.8" width="12.4" height="7.4" rx="3.4" fill="#3f2818" />
+          <path d="M3 2.4 Q7 1.4 11 2.4 M-4 11.4 Q0 10.4 4 11.4 M10 11.4 Q14 10.4 18 11.4" stroke="#c49a74" strokeOpacity="0.55" strokeWidth="1" fill="none" strokeLinecap="round" />
+        </pattern>
+        <linearGradient id="tt-cyl" x1="0" x2="1">
+          <stop offset="0" stopColor="#000" stopOpacity="0.75" />
+          <stop offset="0.22" stopColor="#000" stopOpacity="0.1" />
+          <stop offset="0.38" stopColor="#fff" stopOpacity="0.16" />
+          <stop offset="0.55" stopColor="#000" stopOpacity="0" />
+          <stop offset="1" stopColor="#000" stopOpacity="0.8" />
         </linearGradient>
-        <linearGradient id="tt-horn-v" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="tt-shade-v" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#000" stopOpacity="0" />
-          <stop offset="1" stopColor="#000" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#000" stopOpacity="0.45" />
         </linearGradient>
-        <linearGradient id="tt-leather" x1="0" x2="1">
-          <stop offset="0" stopColor="#2e1607" />
-          <stop offset="0.3" stopColor="#8a4b1f" />
-          <stop offset="0.5" stopColor="#a86331" />
-          <stop offset="0.75" stopColor="#6b3814" />
-          <stop offset="1" stopColor="#2a1406" />
+        <linearGradient id="tt-glass" x1="0" x2="1">
+          <stop offset="0" stopColor="#f0f9ff" stopOpacity="0.32" />
+          <stop offset="0.14" stopColor="#f0f9ff" stopOpacity="0.06" />
+          <stop offset="0.8" stopColor="#f0f9ff" stopOpacity="0.04" />
+          <stop offset="1" stopColor="#f0f9ff" stopOpacity="0.3" />
         </linearGradient>
-        <linearGradient id="tt-band" x1="0" x2="1">
-          <stop offset="0" stopColor="#120b06" />
-          <stop offset="0.45" stopColor="#3b2416" />
-          <stop offset="1" stopColor="#0d0805" />
+        <linearGradient id="tt-jar-water" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ecfccb" stopOpacity="0.5" />
+          <stop offset="0.45" stopColor="#84cc16" stopOpacity="0.35" />
+          <stop offset="1" stopColor="#14532d" stopOpacity="0.85" />
         </linearGradient>
         <linearGradient id="tt-alpaca" x1="0" x2="1">
           <stop offset="0" stopColor="#4b5563" />
@@ -96,11 +98,6 @@ export default function Scene(p: SceneState) {
           <stop offset="0.5" stopColor="#9ca3af" />
           <stop offset="0.8" stopColor="#e5e7eb" />
           <stop offset="1" stopColor="#374151" />
-        </linearGradient>
-        <linearGradient id="tt-gold" x1="0" x2="1">
-          <stop offset="0" stopColor="#92400e" />
-          <stop offset="0.5" stopColor="#fde68a" />
-          <stop offset="1" stopColor="#b45309" />
         </linearGradient>
         <linearGradient id="tt-wood" x1="0" x2="1">
           <stop offset="0" stopColor="#3f2a17" />
@@ -138,7 +135,7 @@ export default function Scene(p: SceneState) {
         <path key={i} d={`M${x} 298 q40 ${i % 2 ? 3 : -3} 80 0`} stroke="#000" strokeOpacity="0.25" fill="none" />
       ))}
       <ellipse cx="70" cy="291" rx="34" ry="3.5" fill="#000" opacity="0.55" />
-      <ellipse cx="190" cy="291" rx="34" ry="4" fill="#000" opacity="0.55" />
+      <ellipse cx="190" cy="291" rx="31" ry="4" fill="#000" opacity="0.55" />
       <ellipse cx={340 - 50 * tilt} cy="291" rx={44 - 14 * tilt} ry="4.5" fill="#000" opacity={0.55 - 0.3 * tilt} />
 
       {/* HUD */}
@@ -196,46 +193,46 @@ export default function Scene(p: SceneState) {
           return <Leaf key={i} x={x} y={y} r={t * 540 + i * 40} s={0.7} c={i % 2 ? "#16a34a" : "#4ade80"} />;
         })}
 
-      {/* ── Guampa ── */}
+      {/* ── Guampa ── a straight leather-wrapped cup, like the ones sold at every market in Paraguay */}
       <g>
-        {/* bombilla (drawn first; the rim covers where it enters) */}
-        <path d="M178 156 L152 78" stroke="url(#tt-alpaca)" strokeWidth="5" strokeLinecap="round" />
-        <path d="M177 155 L151 77" stroke="#fff" strokeOpacity="0.5" strokeWidth="1" />
-        <path d="M152 78 Q149 70 141 66" fill="none" stroke="url(#tt-gold)" strokeWidth="5" strokeLinecap="round" />
-        <rect x="157" y="98" width="9" height="6" rx="1.5" fill="url(#tt-gold)" transform="rotate(-18 161 101)" />
-        {sipping &&
-          [0, 1, 2].map((i) => (
-            <circle key={i} r="1.8" fill="#d9f99d">
-              <animateMotion dur="0.55s" begin={`${i * 0.18}s`} repeatCount="indefinite" path="M176 150 L152 78 Q149 70 141 66" />
-            </circle>
-          ))}
-
-        {/* horn body */}
-        <path d="M158 152 C158 200 160 248 163 280 L217 280 C220 248 222 200 222 152 Z" fill="url(#tt-horn)" />
-        {/* natural horn streaks */}
-        <path d="M168 160 C170 200 167 240 171 278 M184 158 C182 190 186 230 183 278 M206 160 C209 200 204 236 208 278" stroke="#2a1a0d" strokeOpacity="0.28" strokeWidth="2.5" fill="none" />
-        <path d="M176 162 C178 196 175 236 178 276" stroke="#fffbeb" strokeOpacity="0.35" strokeWidth="1.5" fill="none" />
-        <path d="M163 165 C164 210 165 250 167 276" stroke="#fff" strokeOpacity="0.18" strokeWidth="3" fill="none" />
-        <path d="M158 152 C158 200 160 248 163 280 L217 280 C220 248 222 200 222 152 Z" fill="url(#tt-horn-v)" />
-        {/* leather band with ñandutí */}
-        <path d="M158.8 196 C159 214 159.4 230 160 246 L220 246 C220.6 230 221 214 221.2 196 Z" fill="url(#tt-band)" />
-        <path d="M159 199.5 L221 199.5 M160 242.5 L220 242.5" stroke="#fef3c7" strokeWidth="0.9" strokeDasharray="2.5 2" opacity="0.8" />
-        <Nanduti cx={190} cy={221} r={15} />
-        {/* alpaca base and engraved rim */}
-        <path d="M161 274 L219 274 L222 289 Q190 294 158 289 Z" fill="url(#tt-alpaca)" />
-        <path d="M163 281 L217 281" stroke="#374151" strokeWidth="0.6" strokeDasharray="1 2" />
-        <path d="M156 150 L224 150 L223.4 164 Q190 170 156.6 164 Z" fill="url(#tt-alpaca)" />
-        <path d="M158 158 Q190 163 222 158" stroke="#374151" strokeWidth="0.7" strokeDasharray="1.5 2.5" fill="none" />
+        {/* body: croc-embossed leather, rounded into a cylinder by the shading */}
+        <path d="M162 150 L162 282 Q162 288 168 288 L212 288 Q218 288 218 282 L218 150 Z" fill="url(#tt-croc)" />
+        {/* the smooth leather strip where the wrap closes, with zigzag stitching */}
+        <path d="M162 150 L174 150 L174 288 L168 288 Q162 288 162 282 Z" fill="#1d120b" />
+        <path
+          d={`M175 154 ${Array.from({ length: 22 }, (_, i) => `L${i % 2 ? 175 : 178.5} ${157 + i * 6}`).join(" ")}`}
+          stroke="#c9b08a"
+          strokeOpacity="0.7"
+          strokeWidth="0.8"
+          fill="none"
+        />
+        <path d="M162 150 L162 282 Q162 288 168 288 L212 288 Q218 288 218 282 L218 150 Z" fill="url(#tt-cyl)" />
+        <path d="M162 150 L162 282 Q162 288 168 288 L212 288 Q218 288 218 282 L218 150 Z" fill="url(#tt-shade-v)" />
+        {/* folded leather lip */}
+        <path d="M162 150 L218 150 L218 157 Q190 162 162 157 Z" fill="#24160d" />
+        <path d="M162 157 Q190 162 218 157" stroke="#000" strokeOpacity="0.6" fill="none" />
 
         {/* opening: yerba heaped to one side ("montañita"), water pooling on the bombilla side */}
-        <ellipse cx="190" cy="150" rx="34" ry="7" fill="#1a2e05" />
-        <path d="M184 152 C190 140 204 136 222 147 C214 154 196 156 184 152 Z" fill="#4d7c0f" />
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
-          <circle key={i} cx={190 + (i % 5) * 6} cy={145 + Math.floor(i / 5) * 4 + (i % 2)} r="1.1" fill={i % 3 ? "#a3e635" : "#365314"} />
+        <ellipse cx="190" cy="150" rx="28" ry="6" fill="#1a2e05" />
+        <path d="M186 152 C192 141 204 138 217 147 C210 154 196 155 186 152 Z" fill="#4d7c0f" />
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+          <circle key={i} cx={192 + (i % 4) * 6} cy={145 + Math.floor(i / 4) * 4 + (i % 2)} r="1.1" fill={i % 3 ? "#a3e635" : "#365314"} />
         ))}
-        <ellipse cx={176} cy={151} rx={4 + 14 * level} ry={1.5 + 3 * level} fill="url(#tt-water)" opacity={level > 0.02 ? 0.9 : 0} />
-        {level > 0.3 && [0, 1, 2].map((i) => <circle key={i} cx={170 + i * 5} cy={150.5 - (i % 2)} r="0.9" fill="#fff" opacity={0.8 * level} />)}
-        <path d="M156 150 A34 7 0 0 0 224 150" fill="none" stroke="#f8fafc" strokeWidth="1.2" />
+        <ellipse cx={178} cy={151} rx={3 + 11 * level} ry={1.2 + 2.6 * level} fill="url(#tt-water)" opacity={level > 0.02 ? 0.9 : 0} />
+        {level > 0.3 && [0, 1, 2].map((i) => <circle key={i} cx={173 + i * 5} cy={150.5 - (i % 2)} r="0.9" fill="#fff" opacity={0.8 * level} />)}
+
+        {/* straight steel bombilla, leaning on the rim */}
+        <path d="M176 151 L164 64" stroke="url(#tt-alpaca)" strokeWidth="4.5" strokeLinecap="round" />
+        <path d="M175 150 L163 64" stroke="#fff" strokeOpacity="0.55" strokeWidth="0.9" />
+        <path d="M166.5 82 L161.5 82.7" stroke="#6b7280" strokeWidth="5.5" strokeLinecap="round" transform="rotate(-8 164 82)" />
+        {sipping &&
+          [0, 1, 2].map((i) => (
+            <circle key={i} r="1.6" fill="#d9f99d">
+              <animateMotion dur="0.55s" begin={`${i * 0.18}s`} repeatCount="indefinite" path="M175 148 L164 64" />
+            </circle>
+          ))}
+        {/* front of the rim, over the bombilla */}
+        <path d="M162 150 A28 6 0 0 0 218 150" fill="none" stroke="#3d2819" strokeWidth="1.6" />
       </g>
 
       {/* Stream from the jarra spout into the guampa */}
@@ -252,72 +249,53 @@ export default function Scene(p: SceneState) {
         </g>
       )}
 
-      {/* ── Jarra ── tilts around its spout, which ends right above the guampa */}
+      {/* ── Jarra ── a glass pitcher; it tilts around its spout, which ends right above the guampa */}
       <g transform={`translate(${-85 * tilt} ${12 * tilt}) rotate(${-62 * tilt} 290 98)`}>
-        {/* yuyos and ice sticking out of the top */}
-        <path d="M316 106 C312 88 306 80 298 76 M346 106 C348 86 356 76 366 72 M330 106 C330 92 328 84 324 76" stroke="#15803d" strokeWidth="1.8" fill="none" />
-        <Leaf x={296} y={78} r={-150} s={0.9} />
-        <Leaf x={302} y={86} r={-200} s={0.8} c="#16a34a" />
-        <Leaf x={362} y={74} r={-20} s={0.9} c="#4ade80" />
-        <Leaf x={356} y={82} r={20} s={0.8} c="#15803d" />
-        {/* cedrón: long narrow leaves */}
-        <path d="M324 76 l-3 -16 M324 76 l6 -14 M324 76 l-9 -10" stroke="#65a30d" strokeWidth="2.6" strokeLinecap="round" />
-        {yuyoIn && (
-          <>
-            <Leaf x={310} y={98} r={-30} s={0.6} c="#166534" />
-            <Leaf x={350} y={96} r={200} s={0.6} c="#166534" />
-          </>
-        )}
-        <Ice x={314} y={96} r={14} />
-        <Ice x={338} y={94} r={-10} s={0.95} />
-        <Ice x={360} y={97} r={30} s={0.8} />
+        <defs>
+          <clipPath id="tt-jar">
+            <path d={JAR} />
+          </clipPath>
+        </defs>
+        {/* chunky glass handle */}
+        <path d="M379 122 C412 124 414 226 384 246" fill="none" stroke="#e0f2fe" strokeOpacity="0.28" strokeWidth="12" strokeLinecap="round" />
+        <path d="M382 126 C408 130 409 222 385 240" fill="none" stroke="#fff" strokeOpacity="0.55" strokeWidth="1.6" />
+        <path d="M377 118 C416 118 420 230 386 252" fill="none" stroke="#fff" strokeOpacity="0.2" strokeWidth="1" />
 
-        {/* leather strap handle */}
-        <path d="M380 136 C414 140 416 236 380 244" fill="none" stroke="#5a2e10" strokeWidth="11" strokeLinecap="round" />
-        <path d="M381 140 C408 145 409 232 381 239" fill="none" stroke="#f5deb3" strokeWidth="0.8" strokeDasharray="2.5 2" opacity="0.7" />
-        <circle cx="383" cy="138" r="2" fill="url(#tt-alpaca)" />
-        <circle cx="383" cy="242" r="2" fill="url(#tt-alpaca)" />
+        {/* what's inside, seen through the glass */}
+        <g clipPath="url(#tt-jar)">
+          <rect x="280" y={112 + 34 * level} width="120" height="190" fill="url(#tt-jar-water)" />
+          <ellipse cx="338" cy="262" rx="48" ry="30" fill="#14532d" opacity="0.7" />
+          {JAR_LEAVES.map(([x, y, r, s, c], i) => (
+            <Leaf key={i} x={x} y={y} r={r} s={s} c={c} />
+          ))}
+          {yuyoIn && (
+            <>
+              <Leaf x={312} y={132 + 30 * level} r={-30} s={1} c="#166534" />
+              <Leaf x={346} y={128 + 30 * level} r={200} s={1} c="#15803d" />
+            </>
+          )}
+          <Ice x={312} y={122 + 34 * level} r={14} s={1.1} />
+          <Ice x={338} y={118 + 34 * level} r={-10} s={1.2} />
+          <Ice x={362} y={124 + 34 * level} r={30} s={1} />
+          <path d={`M280 ${112 + 34 * level} L400 ${112 + 34 * level}`} stroke="#f7fee7" strokeOpacity="0.6" strokeWidth="1.2" />
+        </g>
+        {/* a sprig of mint and cedrón poking out of the top */}
+        <path d="M322 112 C320 98 316 90 310 84 M332 112 C334 96 340 88 348 82" stroke="#15803d" strokeWidth="1.6" fill="none" />
+        <Leaf x={308} y={86} r={-150} s={0.85} />
+        <Leaf x={346} y={84} r={-25} s={0.85} c="#4ade80" />
+        <path d="M332 96 l-3 -13 M332 96 l5 -12" stroke="#65a30d" strokeWidth="2.4" strokeLinecap="round" />
 
-        {/* metal rim and spout */}
-        <path d="M300 104 L380 104 L380 116 L300 116 Z" fill="url(#tt-alpaca)" />
-        <ellipse cx="340" cy="104" rx="40" ry="6" fill="#0f172a" stroke="url(#tt-alpaca)" strokeWidth="3" />
-        <path d="M301 101 L287 96 Q286 102 301 110 Z" fill="url(#tt-alpaca)" />
+        {/* the glass itself */}
+        <path d={JAR} fill="url(#tt-glass)" stroke="#f8fafc" strokeOpacity="0.6" strokeWidth="1.8" />
+        <path d="M290 98 Q285 95 284 93 Q290 92 300 101" fill="#f0f9ff" fillOpacity="0.35" stroke="#f8fafc" strokeOpacity="0.7" strokeWidth="1.4" />
+        <ellipse cx="338" cy="104" rx="40" ry="5.5" fill="#0f172a" fillOpacity="0.25" stroke="#f8fafc" strokeOpacity="0.75" strokeWidth="2" />
+        <path d="M303 118 C302 138 298 150 295 170 C291 200 291 236 296 262" stroke="#fff" strokeOpacity="0.45" strokeWidth="3" fill="none" strokeLinecap="round" />
+        <path d="M374 120 C375 140 377 152 380 168" stroke="#fff" strokeOpacity="0.3" strokeWidth="2" fill="none" strokeLinecap="round" />
+        <path d="M300 284 Q338 292 376 284" stroke="#f8fafc" strokeOpacity="0.5" strokeWidth="3" fill="none" />
         {/* condensation */}
-        {[
-          [308, 111],
-          [326, 113],
-          [354, 110],
-          [372, 113],
-        ].map(([x, y], i) => (
-          <ellipse key={i} cx={x} cy={y} rx="1.2" ry="1.7" fill="#e0f2fe" opacity="0.85" />
+        {DROPS.map(([x, y, r], i) => (
+          <ellipse key={i} cx={x} cy={y} rx={r} ry={r * 1.3} fill="#f8fafc" opacity="0.55" />
         ))}
-
-        {/* tooled leather forro with laced edges */}
-        <path d="M300 116 L380 116 L380 282 Q340 292 300 282 Z" fill="url(#tt-leather)" />
-        <path d="M300 116 L380 116 L380 282 Q340 292 300 282 Z" fill="url(#tt-horn-v)" opacity="0.6" />
-        {Array.from({ length: 13 }, (_, i) => {
-          const x = 303 + i * 6.1;
-          const low = 281 + (i > 2 && i < 10 ? 2 : 0);
-          return (
-            <g key={i} stroke="#f5deb3" strokeWidth="1.1" opacity="0.85">
-              <path d={`M${x} 117 l4 5 M${x + 4} 117 l-4 5`} />
-              <path d={`M${x} ${low} l4 -5 M${x + 4} ${low} l-4 -5`} />
-            </g>
-          );
-        })}
-        {/* burned-in medallion: the flag's star with a laurel, over a tricolor band */}
-        <circle cx="340" cy="168" r="20" fill="none" stroke="#2a1406" strokeWidth="2" opacity="0.8" />
-        <circle cx="340" cy="168" r="15.5" fill="none" stroke="#2a1406" strokeWidth="0.8" strokeDasharray="1.5 1.5" opacity="0.8" />
-        <path d="M340 157 L342.9 165.6 L351.9 165.6 L344.6 170.9 L347.4 179.5 L340 174.2 L332.6 179.5 L335.4 170.9 L328.1 165.6 L337.1 165.6 Z" fill="#facc15" stroke="#2a1406" strokeWidth="0.8" />
-        <path d="M326 181 C330 187 335 190 340 190 C345 190 350 187 354 181" fill="none" stroke="#2a1406" strokeWidth="1.2" />
-        <rect x="300" y="214" width="80" height="4" fill="#d52b1e" />
-        <rect x="300" y="218" width="80" height="4" fill="#f8fafc" />
-        <rect x="300" y="222" width="80" height="4" fill="#0038a8" />
-        <text x="340" y="254" textAnchor="middle" fontFamily="Georgia, serif" fontSize="11" fontWeight="700" fill="#2a1406" opacity="0.75" letterSpacing="2">
-          G·A
-        </text>
-        {/* shine */}
-        <path d="M308 122 L309 276" stroke="#fff" strokeOpacity="0.14" strokeWidth="4" />
       </g>
 
       {slurp && (

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { setTheme, themes } from "../lib/theme";
+import { GUAMPA_SVG } from "../lib/guampa";
 
 // ⌘K / Ctrl+K / "/" command menu: jump to sections, switch theme or language, and trigger the easter eggs.
 
@@ -53,7 +54,7 @@ export default function CommandPalette({
       })),
       ...themes.map((t) => ({ group: labels.theme, label: t, icon: "◐", keywords: "theme color", run: () => setTheme(t) })),
       ...languages.filter((l) => !l.current).map((l) => ({ group: labels.lang, label: l.label, icon: l.code.toUpperCase(), keywords: "language idioma langue", run: () => location.assign(l.href) })),
-      { group: labels.actions, label: labels.replay, icon: "🧉", keywords: "terere intro", run: () => dispatchEvent(new Event("terere:replay")) },
+      { group: labels.actions, label: labels.replay, icon: GUAMPA_SVG, keywords: "terere intro", run: () => dispatchEvent(new Event("terere:replay")) },
       {
         group: labels.actions,
         label: labels.drop,
@@ -205,7 +206,7 @@ export default function CommandPalette({
                   onClick={() => run(item)}
                   className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors ${i === index ? "bg-accent/15 text-white" : "text-slate-300"}`}
                 >
-                  <span className="grid h-6 w-8 shrink-0 place-items-center rounded border border-white/10 font-mono text-[10px] text-accent">{item.icon}</span>
+                  <span className="grid h-6 w-8 shrink-0 place-items-center rounded border border-white/10 font-mono text-[10px] text-accent" {...(item.icon.startsWith("<svg") ? { dangerouslySetInnerHTML: { __html: item.icon } } : { children: item.icon })} />
                   <span className="flex-1 capitalize">{item.label}</span>
                   {i === index && <span className="font-mono text-[10px] text-slate-500">↵</span>}
                 </button>

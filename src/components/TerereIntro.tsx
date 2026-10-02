@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Scene, { type SceneState } from "./terere/Scene";
 import { createSound, type TerereSound } from "./terere/sound";
+import { GUAMPA_SVG } from "../lib/guampa";
 
 // First-visit intro, a tereré round in three steps:
 // 1. tap the mortero to crush the yuyos, which fly into the jarra
@@ -333,7 +334,7 @@ export default function TerereIntro({ labels }: { labels: IntroLabels }) {
             >
               <span className="absolute inset-y-0 left-0 bg-accent/35" style={{ width: `${progress * 100}%` }} />
               <span className="relative">
-                {phase === "pour" ? labels.pour : labels.drink} {phase === "pour" ? "💧" : "🧉"}
+                {phase === "pour" ? labels.pour : labels.drink} {phase === "pour" ? "💧" : <span dangerouslySetInnerHTML={{ __html: GUAMPA_SVG }} />}
               </span>
             </button>
           )}

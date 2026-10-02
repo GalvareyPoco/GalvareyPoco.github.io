@@ -48,7 +48,7 @@ const en = {
   shyWin: "You caught them all. They'll behave now.",
   shyLose: "They got away. They're back to normal now.",
   party: "🎉 Party!",
-  served: "Tereré served {n}× in this browser 🧉",
+  served: "Tereré served {n}× in this browser 🧊",
 };
 
 export type EggStrings = typeof en;
@@ -98,7 +98,7 @@ const es: EggStrings = {
   shyWin: "Los atrapaste a todos. Ya se portan bien.",
   shyLose: "Se escaparon. Ya volvieron a la normalidad.",
   party: "🎉 ¡Fiesta!",
-  served: "Tereré servido {n}× en este navegador 🧉",
+  served: "Tereré servido {n}× en este navegador 🧊",
 };
 
 const fr: EggStrings = {
@@ -146,7 +146,7 @@ const fr: EggStrings = {
   shyWin: "Vous les avez tous attrapés. Ils vont se tenir tranquilles.",
   shyLose: "Ils se sont échappés. Tout est revenu à la normale.",
   party: "🎉 C'est la fête !",
-  served: "Tereré servi {n}× dans ce navigateur 🧉",
+  served: "Tereré servi {n}× dans ce navigateur 🧊",
 };
 
 export function eggStrings(lang: string): EggStrings {
