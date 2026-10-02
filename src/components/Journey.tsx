@@ -94,12 +94,15 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
     const markers = () => {
       const here = stops[activeRef.current].placeId;
       const seen = new Set(stops.slice(0, activeRef.current + 1).map((s) => s.placeId));
-      return places.map((p) => ({
-        location: p.location,
-        size: p.id === here ? 0.1 : seen.has(p.id) ? 0.06 : 0.035,
-        color: p.id === here ? accent : seen.has(p.id) ? accent2 : ([0.45, 0.5, 0.6] as [number, number, number]),
-        id: p.id,
-      }));
+      // San Miguel and Asunción are close together, so dots stay small and the current one is drawn last, on top.
+      return places
+        .map((p) => ({
+          location: p.location,
+          size: p.id === here ? 0.06 : seen.has(p.id) ? 0.04 : 0.025,
+          color: p.id === here ? accent : seen.has(p.id) ? accent2 : ([0.45, 0.5, 0.6] as [number, number, number]),
+          id: p.id,
+        }))
+        .sort((a, b) => Number(a.id === here) - Number(b.id === here));
     };
     // One arc per leg travelled so far; the latest leg is bright.
     const arcs = () =>
@@ -236,8 +239,9 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
 
       <ol ref={list} className="relative z-10 space-y-[24vh] pb-[20vh] pl-8 lg:space-y-[32vh] lg:pt-[12vh] lg:pb-[30vh]">
         {/* Route line with a fill that follows the scroll */}
-        <span className="absolute top-0 bottom-0 left-2.5 w-px bg-white/10" aria-hidden="true" />
-        <span className="absolute top-0 left-2.5 w-px origin-top bg-gradient-to-b from-accent to-accent-2" style={{ height: "100%", transform: `scaleY(${fill})` }} aria-hidden="true" />
+        {/* The rail is centered on the chapter dots (dots sit 33px left of the card, inside its 1px border). */}
+        <span className="absolute top-0 bottom-0 left-[7.5px] w-px bg-white/10" aria-hidden="true" />
+        <span className="absolute top-0 left-[7.5px] w-px origin-top bg-gradient-to-b from-accent to-accent-2" style={{ height: "100%", transform: `scaleY(${fill})` }} aria-hidden="true" />
         {stops.map((s, i) => (
           <li
             key={s.id}
@@ -248,7 +252,7 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
             className={`card spotlight relative p-6 transition duration-500 ${i === active ? "border-accent/50 bg-ink-900/90 shadow-xl shadow-accent/10" : "opacity-10 lg:opacity-50"}`}
           >
             <span
-              className={`absolute top-7 -left-[1.95rem] grid h-4 w-4 place-items-center rounded-full border transition duration-500 ${
+              className={`absolute top-7 -left-[33px] grid h-4 w-4 place-items-center rounded-full border transition duration-500 ${
                 i <= active ? "border-accent bg-accent/30 shadow-[0_0_14px] shadow-accent/60" : "border-white/20 bg-ink-950"
               }`}
               aria-hidden="true"

@@ -7,6 +7,12 @@ const BEST_KEY = "invaders-best";
 
 type Enemy = { x: number; y: number; w: number; text: string; alive: boolean };
 type Shot = { x: number; y: number; vy: number };
+/** 7×6 pixel heart with its top-left corner at (x, y). */
+function heart(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  const rows = ["0110110", "1111111", "1111111", "0111110", "0011100", "0001000"];
+  rows.forEach((row, j) => [...row].forEach((c, i) => c === "1" && ctx.fillRect(x + i * 2, y + j * 2, 2, 2)));
+}
+
 type Spark = { x: number; y: number; vx: number; vy: number; life: number };
 
 export default function invaders(t: EggStrings): Promise<void> {
@@ -38,6 +44,8 @@ export default function invaders(t: EggStrings): Promise<void> {
   document.body.append(box);
   const overflow = root.style.overflow;
   root.style.overflow = "hidden";
+  // Lets the 3D badge pause while the game covers the page, so the game gets the whole frame budget.
+  dispatchEvent(new CustomEvent("egg:takeover", { detail: true }));
 
   const ctx = canvas.getContext("2d")!;
   let W = 0;
@@ -63,6 +71,9 @@ export default function invaders(t: EggStrings): Promise<void> {
   let bombs: Shot[] = [];
   let sparks: Spark[] = [];
   let player = { x: W / 2, lives: 3, hitAt: -1e9 };
+  // Where the pointer wants the ship; the ship glides there instead of teleporting. null = keyboard only.
+  let aim: number | null = null;
+  let holding = false;
   let score = 0;
   let dir = 1;
   let state: "play" | "over" = "play";
@@ -101,6 +112,7 @@ export default function invaders(t: EggStrings): Promise<void> {
     bombs = [];
     sparks = [];
     player = { x: W / 2, lives: 3, hitAt: -1e9 };
+    aim = null;
     score = 0;
     dir = 1;
     state = "play";
@@ -163,9 +175,14 @@ export default function invaders(t: EggStrings): Promise<void> {
     if (state === "play") {
       // Player
       const speed = 420;
-      if (keys.has("ArrowLeft") || keys.has("a")) player.x -= speed * dt;
-      if (keys.has("ArrowRight") || keys.has("d")) player.x += speed * dt;
-      if (keys.has(" ")) fire(now);
+      const left = keys.has("arrowleft") || keys.has("a");
+      const right = keys.has("arrowright") || keys.has("d");
+      if (left || right) {
+        aim = null;
+        player.x += (right ? speed : -speed) * dt;
+      } else if (aim !== null) player.x += (aim - player.x) * Math.min(1, dt * 14);
+      if (holding) fire(now);
+      
       player.x = Math.max(24, Math.min(W - 24, player.x));
 
       // The formation speeds up as it shrinks, and steps down at the edges.
@@ -266,7 +283,12 @@ export default function invaders(t: EggStrings): Promise<void> {
     ctx.fillText(t.invaders.title, 20, 32);
     ctx.font = `400 ${W < 600 ? 11 : 13}px 'JetBrains Mono', monospace`;
     ctx.fillStyle = "#cbd5e1";
-    ctx.fillText(`${t.invaders.score} ${score}   ${t.invaders.best} ${Math.max(best, score)}   ${"♥".repeat(Math.max(0, player.lives))}`, 20, 56);
+    const hud = `${t.invaders.score} ${score}   ${t.invaders.best} ${Math.max(best, score)}`;
+    ctx.fillText(hud, 20, 56);
+    // Lives as drawn pixel hearts, so they never overlap whatever the font.
+    const hx = 20 + ctx.measureText(hud).width + 18;
+    ctx.fillStyle = "#f43f5e";
+    for (let i = 0; i < player.lives; i++) heart(ctx, hx + i * 18, 50);
     ctx.textAlign = "center";
     ctx.fillStyle = "#64748b";
     ctx.fillText(touch ? t.invaders.touch : t.invaders.keys, W / 2, H - 18);
@@ -279,23 +301,30 @@ export default function invaders(t: EggStrings): Promise<void> {
     if (e.key === "Escape") return close();
     if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].includes(e.key)) e.preventDefault();
     if (e.target instanceof HTMLButtonElement && e.key === " ") return;
-    keys.add(e.key.length === 1 ? e.key.toLowerCase() : e.key);
+    keys.add(e.key.toLowerCase());
     // Fire on the press itself too, so a quick tap between frames still shoots.
     if (e.key === " " && !e.repeat) fire(performance.now());
   };
-  const onKeyUp = (e: KeyboardEvent) => keys.delete(e.key.length === 1 ? e.key.toLowerCase() : e.key);
+  const onKeyUp = (e: KeyboardEvent) => keys.delete(e.key.toLowerCase());
   // Pointer: the ship follows the finger or mouse; a tap or click shoots.
+  // Pointer: the ship glides toward the mouse or finger. Click shoots; a held finger keeps shooting.
   const onMove = (e: PointerEvent) => {
-    if (e.pointerType !== "mouse" || e.buttons) player.x = e.clientX;
+    aim = e.clientX;
   };
   const onDown = (e: PointerEvent) => {
-    if (e.pointerType !== "mouse") player.x = e.clientX;
+    aim = e.clientX;
+    if (e.pointerType !== "mouse") holding = true;
     fire(performance.now());
   };
+  const onUp = () => (holding = false);
   addEventListener("keydown", onKey);
   addEventListener("keyup", onKeyUp);
   canvas.addEventListener("pointermove", onMove);
   canvas.addEventListener("pointerdown", onDown);
+  addEventListener("pointerup", onUp);
+  const onBlur = () => keys.clear();
+  addEventListener("blur", onBlur);
+  addEventListener("pointercancel", onUp);
   addEventListener("resize", resize);
   tune([[262, 1], [330, 1], [392, 1], [523, 2]]);
 
@@ -306,7 +335,11 @@ export default function invaders(t: EggStrings): Promise<void> {
       removeEventListener("keydown", onKey);
       removeEventListener("keyup", onKeyUp);
       removeEventListener("resize", resize);
+      removeEventListener("pointerup", onUp);
+      removeEventListener("blur", onBlur);
+      removeEventListener("pointercancel", onUp);
       root.style.overflow = overflow;
+      dispatchEvent(new CustomEvent("egg:takeover", { detail: false }));
       box.remove();
       done();
     };

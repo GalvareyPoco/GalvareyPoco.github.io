@@ -60,9 +60,26 @@ export default function Lanyard3D({ info, accent, accent2, onReady }: Props) {
     };
   }, []);
 
+  // Only render (and step the physics) while the badge is on screen and no full-screen easter egg covers it.
+  const [onScreen, setOnScreen] = useState(true);
+  const [covered, setCovered] = useState(false);
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting));
+    io.observe(el);
+    const onTakeover = (e: Event) => setCovered(Boolean((e as CustomEvent<boolean>).detail));
+    addEventListener("egg:takeover", onTakeover);
+    return () => {
+      io.disconnect();
+      removeEventListener("egg:takeover", onTakeover);
+    };
+  }, []);
+
   return (
     <div ref={wrap} className="absolute inset-0">
       <Canvas
+        frameloop={onScreen && !covered ? "always" : "never"}
         camera={{ position: [0, 0, 13], fov: 25 }}
         dpr={[1, 2]}
         gl={{ alpha: true, antialias: !isMobile }}

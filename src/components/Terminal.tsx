@@ -42,7 +42,7 @@ const T = {
       "projects         things I've built",
       "socials          where to find me",
       "cd <section>     jump to about, journey, awards, experience, projects, skills, contact",
-      "theme [name]     terere · matrix · neon · amber",
+      "theme [name]     terere · matrix · neon · amber · gold",
       "terere           replay the intro",
       "matrix           follow the white rabbit",
       "sudo hire-me     you know you want to",
@@ -51,7 +51,7 @@ const T = {
     whoami: ["Guillermo Alvarez, aka Galvarey · full-stack dev, CTO and game maker from Asunción, Paraguay.", "10+ years in tech. Speaks ES · EN · FR. Likes turtles 🐢"],
     notFound: (c: string) => `command not found: ${c}. try \`help\``,
     theme: (t: string) => `theme set to ${t}`,
-    themeUsage: "usage: theme <terere|matrix|neon|amber>",
+    themeUsage: "usage: theme <terere|matrix|neon|amber|gold>",
     terere: "serving tereré... 🧉",
     matrix: "wake up, neo...",
     hire: ["[sudo] password for recruiter: ********", "access granted ✔ opening LinkedIn..."],
@@ -70,7 +70,7 @@ const T = {
       "projects         lo que construí",
       "socials          dónde encontrarme",
       "cd <sección>     ir a about, journey, awards, experience, projects, skills, contact",
-      "theme [nombre]   terere · matrix · neon · amber",
+      "theme [nombre]   terere · matrix · neon · amber · gold",
       "terere           repetir la intro",
       "matrix           seguí al conejo blanco",
       "sudo hire-me     sabés que querés",
@@ -79,7 +79,7 @@ const T = {
     whoami: ["Guillermo Alvarez, aka Galvarey · dev full-stack, CTO y creador de videojuegos de Asunción, Paraguay.", "10+ años en tecnología. Habla ES · EN · FR. Le gustan las tortugas 🐢"],
     notFound: (c: string) => `comando no encontrado: ${c}. probá \`help\``,
     theme: (t: string) => `tema cambiado a ${t}`,
-    themeUsage: "uso: theme <terere|matrix|neon|amber>",
+    themeUsage: "uso: theme <terere|matrix|neon|amber|gold>",
     terere: "sirviendo tereré... 🧉",
     matrix: "despertá, neo...",
     hire: ["[sudo] contraseña para reclutador: ********", "acceso concedido ✔ abriendo LinkedIn..."],
@@ -98,7 +98,7 @@ const T = {
       "projects         ce que j'ai construit",
       "socials          où me trouver",
       "cd <section>     aller à about, journey, awards, experience, projects, skills, contact",
-      "theme [nom]      terere · matrix · neon · amber",
+      "theme [nom]      terere · matrix · neon · amber · gold",
       "terere           rejouer l'intro",
       "matrix           suivez le lapin blanc",
       "sudo hire-me     vous en avez envie",
@@ -107,7 +107,7 @@ const T = {
     whoami: ["Guillermo Alvarez, aka Galvarey · dev full-stack, CTO et créateur de jeux à Asunción, au Paraguay.", "10+ ans dans la tech. Parle ES · EN · FR. Adore les tortues 🐢"],
     notFound: (c: string) => `commande introuvable : ${c}. essayez \`help\``,
     theme: (t: string) => `thème : ${t}`,
-    themeUsage: "usage : theme <terere|matrix|neon|amber>",
+    themeUsage: "usage : theme <terere|matrix|neon|amber|gold>",
     terere: "on sert le tereré... 🧉",
     matrix: "réveille-toi, neo...",
     hire: ["[sudo] mot de passe pour recruteur : ********", "accès accordé ✔ ouverture de LinkedIn..."],
@@ -252,7 +252,7 @@ export default function Terminal({ lang, label, data }: { lang: Lang; label: str
       }
       case "theme": {
         const th = args[0] as Theme | undefined;
-        if (th && (themes as readonly Theme[]).includes(th)) {
+        if (th && themes.includes(th)) {
           setTheme(th);
           say(t.theme(th));
         } else say(t.themeUsage);

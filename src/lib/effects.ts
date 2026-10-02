@@ -1,5 +1,6 @@
 // Page-wide effects wired up once by the layout: scroll reveal, text scramble, cursor spotlight,
 // scroll progress, theme button and the Konami code easter eggs (see ./eggs).
+import { dodgeField } from "./dodge";
 import { initEggs } from "./eggs";
 import { nextTheme } from "./theme";
 
@@ -535,4 +536,5 @@ export function initEffects() {
   rotate();
   dotGrid();
   skillsGravity();
+  dodgeField();
 }

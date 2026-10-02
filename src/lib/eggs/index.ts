@@ -9,7 +9,10 @@ const load: Record<Egg, () => Promise<{ default: (t: EggStrings) => Promise<void
   invaders: () => import("./invaders"),
   eightbit: () => import("./eightbit"),
   flood: () => import("./flood"),
-  matrix: () => import("./matrix").then((m) => ({ default: () => m.default() })),
+  shy: () => import("./shy"),
+  blackhole: () => import("./blackhole"),
+  party: () => import("./party"),
+  barrel: () => import("./barrel"),
 };
 
 const NEXT_KEY = "egg-next";
@@ -50,6 +53,6 @@ export function initEggs() {
     const name = (e as CustomEvent<string>).detail as Egg;
     if (EGGS.includes(name)) void playEgg(name);
   });
-  // The terminal's `matrix` command.
-  addEventListener("matrix", () => void playEgg("matrix"));
+  // The terminal's `matrix` command (not in the egg rotation any more).
+  addEventListener("matrix", () => void import("./matrix").then((m) => m.default()));
 }

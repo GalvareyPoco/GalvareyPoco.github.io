@@ -28,7 +28,6 @@ html[data-theme="amber"] {
   --color-accent: #fbbf24;
   --color-accent-2: #fb923c;
 }
-/* Secret theme, unlocked by the "Secret level" easter egg. */
 html[data-theme="gold"] {
   --color-accent: #f5c84c;
   --color-accent-2: #fff1c1;
@@ -517,32 +516,33 @@ html[data-intro] .target-cursor {
   color: var(--color-accent);
 }
 
-/* 8-bit mode: pixel font, square corners, hard drop shadows and pixelated photos. */
+/* 8-bit mode: pixel fonts, square corners, hard shadows and pixelated photos.
+   Pixelify Sans is about as wide as Inter and Space Grotesk, so text keeps its size and wrapping. Press Start 2P is
+   twice as wide as JetBrains Mono, so font-size-adjust scales it down to the same width. */
 html.eightbit {
-  font-size: 13px;
-  --font-sans: "Press Start 2P", monospace;
-  --font-display: "Press Start 2P", monospace;
-  --font-mono: "Press Start 2P", monospace;
+  --font-sans: "Pixelify Sans", "Inter", sans-serif;
+  --font-display: "Pixelify Sans", "Space Grotesk", sans-serif;
+  --font-mono: "Press Start 2P", "JetBrains Mono", monospace;
+}
+html.eightbit .font-mono,
+html.eightbit code,
+html.eightbit kbd,
+html.eightbit .egg-toast {
+  font-size-adjust: ex-height 0.47;
+  letter-spacing: 0 !important;
 }
 html.eightbit body {
-  line-height: 1.9;
   -webkit-font-smoothing: none;
-  font-smooth: never;
 }
-html.eightbit body *:not(svg, svg *) {
+html.eightbit body *:not(svg, svg *, canvas, .globe-label) {
   border-radius: 0 !important;
-  letter-spacing: 0 !important;
 }
 html.eightbit h1,
 html.eightbit h2 {
-  line-height: 1.25 !important;
   text-shadow: 4px 4px 0 color-mix(in oklab, var(--color-accent) 45%, #000);
 }
-html.eightbit .card,
-html.eightbit a[class*="rounded"],
-html.eightbit button[class*="rounded"] {
-  box-shadow: 5px 5px 0 color-mix(in oklab, var(--color-accent) 55%, #000) !important;
-  border-width: 2px;
+html.eightbit .card {
+  box-shadow: 6px 6px 0 color-mix(in oklab, var(--color-accent) 45%, #000) !important;
 }
 html.eightbit img {
   filter: url(#pixelate);
@@ -554,5 +554,109 @@ html.eightbit body::after {
   inset: 0;
   z-index: 89;
   pointer-events: none;
-  background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.18) 0 2px, transparent 2px 4px);
+  background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.16) 0 2px, transparent 2px 4px);
+}
+.egg-8bit-badge {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 2px solid var(--color-accent);
+  background: var(--color-ink-950);
+  padding: 0.6rem 0.9rem;
+  font-family: "Press Start 2P", monospace;
+  font-size: 10px;
+  color: var(--color-accent);
+  box-shadow: 4px 4px 0 color-mix(in oklab, var(--color-accent) 45%, #000);
+  cursor: pointer;
+}
+/* Keep messages clear of the 8-bit badge. */
+html.eightbit .egg-toast {
+  bottom: 5rem;
+}
+.egg-8bit-badge span:first-child {
+  animation: blink 1s steps(2) infinite;
+}
+.egg-8bit-badge span:last-child {
+  color: #fff;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Black hole */
+.egg-hole {
+  position: fixed;
+  z-index: 93;
+  width: 2px;
+  height: 2px;
+  border-radius: 999px;
+  translate: -50% -50%;
+  background: #000;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-accent) 70%, transparent), 0 0 40px 12px color-mix(in oklab, var(--color-accent) 50%, transparent);
+  transition: width 2.2s cubic-bezier(.5,0,.8,.4), height 2.2s cubic-bezier(.5,0,.8,.4), opacity .3s;
+  pointer-events: none;
+}
+.egg-hole.is-open {
+  width: 160px;
+  height: 160px;
+  animation: hole-spin 0.8s linear infinite;
+}
+.egg-hole.is-pop {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  transition: width .25s, height .25s, opacity .3s .2s;
+}
+@keyframes hole-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* Party mode */
+.egg-party-wash {
+  position: fixed;
+  inset: 0;
+  z-index: 88;
+  pointer-events: none;
+  mix-blend-mode: color;
+  opacity: 0.45;
+  background: conic-gradient(from 0deg, #f472b6, #facc15, #34d399, #60a5fa, #a78bfa, #f472b6);
+  animation: party-hue 1.2s linear infinite;
+}
+@keyframes party-hue {
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+html.egg-party h1,
+html.egg-party h2,
+html.egg-party h3 {
+  animation: party-bounce 0.3s ease-in-out infinite alternate;
+}
+@keyframes party-bounce {
+  to {
+    translate: 0 -6px;
+  }
+}
+
+/* Barrel roll */
+body.egg-barrel {
+  animation: barrel 1.4s cubic-bezier(.45,0,.2,1);
+}
+@keyframes barrel {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* Secret level: the page glitches while it decrypts. */
+html.egg-hacked main :is(h1, h2, h3) {
+  animation: glitch 0.4s steps(2) 3;
 }
