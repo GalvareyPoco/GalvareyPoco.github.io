@@ -3,9 +3,9 @@ import type { Lang, Localized } from "../i18n";
 // Skill groups, sourced from the README's "Skill Set" and "Languages" sections plus details Galvarey added.
 // Items are tool names; the few that are plain words get translations in `itemText`.
 const groups: { name: Localized; items: string[] }[] = [
-  { name: { en: "Languages", es: "Lenguajes", fr: "Langages" }, items: ["TypeScript", "JavaScript", "Go", "Python", "C#", "Solidity", "SQL", "HTML / CSS"] },
+  { name: { en: "Languages", es: "Lenguajes", fr: "Langages" }, items: ["TypeScript", "JavaScript", "Go", "Python", "Java", "C#", "Solidity", "SQL", "HTML / CSS"] },
   { name: { en: "Frontend & Mobile", es: "Frontend y mobile", fr: "Frontend et mobile" }, items: ["React", "React Native", "Expo", "Next.js", "Vue.js", "Tailwind CSS", "Shadcn/UI", "Tamagui", "Flutter", "Android"] },
-  { name: { en: "Backend & Data", es: "Backend y datos", fr: "Backend et données" }, items: ["Node.js", "NestJS", "Go", ".NET", "PostgreSQL", "Supabase", "MongoDB", "Prisma", "DynamoDB", "ETL pipelines", "Web scraping"] },
+  { name: { en: "Backend & Data", es: "Backend y datos", fr: "Backend et données" }, items: ["Node.js", "NestJS", "Spring Boot", "Go", ".NET", "PostgreSQL", "Supabase", "MongoDB", "Prisma", "DynamoDB", "ETL pipelines", "Web scraping"] },
   { name: { en: "Infrastructure & DevOps", es: "Infraestructura y DevOps", fr: "Infrastructure et DevOps" }, items: ["VPS self-hosting", "Docker", "Traefik", "Domains, DNS & routing", "Microservices", "S3-compatible storage", "Backups", "CI/CD", "AWS (Lambda, Cognito, Bedrock)", "Git"] },
   { name: { en: "Platform services", es: "Servicios de plataforma", fr: "Services de plateforme" }, items: ["PostHog", "Novu", "Resend", "Expo Notifications", "Plane"] },
   { name: { en: "Games & 3D", es: "Videojuegos y 3D", fr: "Jeu vidéo et 3D" }, items: ["Unity", "Godot", "ShaderGraph", "UIToolkit", "TopDownEngine", "Blender (game assets & 3D modeling)"] },

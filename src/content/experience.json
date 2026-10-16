@@ -159,61 +159,30 @@
   {
     "id": "posibillian",
     "role": {
-      "en": "Unity Developer",
-      "es": "Desarrollador Unity",
-      "fr": "Développeur Unity"
+      "en": "Software & Game Developer",
+      "es": "Desarrollador de Software y Videojuegos",
+      "fr": "Développeur logiciel et jeu vidéo"
     },
     "company": "Posibillian Tech",
     "location": "Asunción",
     "start": "2022-03",
-    "end": "2023-08"
-  },
-  {
-    "id": "kuatiapo",
-    "role": {
-      "en": "IT Support Technician",
-      "es": "Técnico de Soporte IT",
-      "fr": "Technicien support informatique"
-    },
-    "company": "Kuatiapo S.A.",
-    "location": "Fernando de la Mora",
-    "start": "2020-04",
-    "end": "2022-06"
-  },
-  {
-    "id": "lina",
-    "role": {
-      "en": "Computer Science Teacher",
-      "es": "Profesor de Informática",
-      "fr": "Professeur d'informatique"
-    },
-    "company": "Centro de Formación y Capacitación Laboral \"Lina\"",
-    "location": "San Juan Bautista, Misiones",
-    "start": "2018-02",
-    "end": "2018-11"
-  },
-  {
-    "id": "sandivel",
-    "role": {
-      "en": "IT Director",
-      "es": "Director de IT",
-      "fr": "Directeur informatique"
-    },
-    "company": "Parador Restaurant Sandivel",
-    "location": "San Miguel, Misiones",
-    "start": "2016-04",
-    "end": "2017-12"
-  },
-  {
-    "id": "mapfre",
-    "role": {
-      "en": "Office Assistant",
-      "es": "Asistente Administrativo",
-      "fr": "Assistant de bureau"
-    },
-    "company": "MAPFRE",
-    "location": "Asunción",
-    "start": "2014-11",
-    "end": "2015-02"
+    "end": "2023-08",
+    "highlights": {
+      "en": [
+        "Designed and built games, from game design and mechanics through to release.",
+        "Developed AI features for the studio's products.",
+        "Managed the servers and databases behind them."
+      ],
+      "es": [
+        "Diseñé y desarrollé videojuegos, desde el diseño de juego y las mecánicas hasta el lanzamiento.",
+        "Desarrollé funcionalidades de IA para los productos del estudio.",
+        "Administré los servidores y bases de datos que los sostenían."
+      ],
+      "fr": [
+        "Conception et développement de jeux, du game design et des mécaniques jusqu'à la sortie.",
+        "Développement de fonctionnalités IA pour les produits du studio.",
+        "Gestion des serveurs et des bases de données qui les faisaient tourner."
+      ]
+    }
   }
 ]
