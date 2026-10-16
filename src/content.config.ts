@@ -41,14 +41,4 @@ const experience = defineCollection({
   }),
 });
 
-const education = defineCollection({
-  loader: file("./src/content/education.json"),
-  schema: z.object({
-    school: z.string(),
-    degree: text,
-    start: z.string().optional(),
-    end: z.string().optional(),
-  }),
-});
-
-export const collections = { projects, experience, education };
+export const collections = { projects, experience };
