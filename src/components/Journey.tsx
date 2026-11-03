@@ -21,7 +21,7 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
   const canvas = useRef<HTMLCanvasElement>(null);
   const items = useRef<(HTMLLIElement | null)[]>([]);
   const list = useRef<HTMLOListElement>(null);
-  const [fill, setFill] = useState(0);
+  const fillEl = useRef<HTMLSpanElement>(null);
 
   // Which chapter is in the middle of the screen.
   useEffect(() => {
@@ -35,21 +35,22 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
           }
         }
       },
-      { rootMargin: "-50% 0px -40% 0px" },
+      // On mobile the sticky globe covers the top half, so a chapter only becomes active once it sits below it.
+      { rootMargin: matchMedia("(min-width: 1024px)").matches ? "-50% 0px -40% 0px" : "-60% 0px -25% 0px" },
     );
     items.current.forEach((el) => el && io.observe(el));
     return () => io.disconnect();
   }, []);
 
-  // The route line beside the chapters fills as you scroll.
+  // The route line beside the chapters fills as you scroll. Written straight to the DOM so scrolling never re-renders.
   useEffect(() => {
     let queued = false;
     const update = () => {
       queued = false;
       const el = list.current;
-      if (!el) return;
+      if (!el || !fillEl.current) return;
       const r = el.getBoundingClientRect();
-      setFill(Math.max(0, Math.min(1, (innerHeight * 0.5 - r.top) / r.height)));
+      fillEl.current.style.transform = `scaleY(${Math.max(0, Math.min(1, (innerHeight * 0.5 - r.top) / r.height))})`;
     };
     const onScroll = () => !queued && (queued = true) && requestAnimationFrame(update);
     addEventListener("scroll", onScroll, { passive: true });
@@ -160,6 +161,8 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
     const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
     io.observe(el);
     const onResize = () => {
+      // Mobile URL bars fire resize while scrolling without changing the width.
+      if (el.offsetWidth === size) return;
       size = el.offsetWidth;
       globe.update({ width: size, height: size });
     };
@@ -228,7 +231,8 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
             <span className="ml-3 text-slate-300 tabular-nums">{fmt.format(Math.round(km))}</span> {kmLabel}
           </div>
           <div className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 text-center font-mono">
-            <p key={stop.id} className="animate-[fadeUp_.5s_ease] text-sm whitespace-nowrap text-white">
+            {/* The chapter card already shows this on mobile, and the one-line caption is wider than a phone. */}
+            <p key={stop.id} className="animate-[fadeUp_.5s_ease] text-sm whitespace-nowrap text-white max-lg:hidden">
               {stop.flag} {stop.title}
               {!stop.title.includes(stop.where) && <span className="text-accent"> · {stop.where}</span>}
             </p>
@@ -237,11 +241,11 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
         </div>
       </div>
 
-      <ol ref={list} className="relative z-10 space-y-[24vh] pb-[20vh] pl-8 lg:space-y-[32vh] lg:pt-[12vh] lg:pb-[30vh]">
+      <ol ref={list} className="relative z-10 space-y-[24svh] pb-[30svh] pl-8 lg:space-y-[32vh] lg:pt-[12vh] lg:pb-[30vh]">
         {/* Route line with a fill that follows the scroll */}
         {/* The rail is centered on the chapter dots (dots sit 33px left of the card, inside its 1px border). */}
         <span className="absolute top-0 bottom-0 left-[7.5px] w-px bg-white/10" aria-hidden="true" />
-        <span className="absolute top-0 left-[7.5px] w-px origin-top bg-gradient-to-b from-accent to-accent-2" style={{ height: "100%", transform: `scaleY(${fill})` }} aria-hidden="true" />
+        <span className="absolute top-0 left-[7.5px] w-px origin-top bg-gradient-to-b from-accent to-accent-2" ref={fillEl} style={{ height: "100%", transform: "scaleY(0)" }} aria-hidden="true" />
         {stops.map((s, i) => (
           <li
             key={s.id}
@@ -249,7 +253,7 @@ export default function Journey({ stops, places, dragHint, kmLabel }: { stops: J
               items.current[i] = el;
             }}
             data-index={i}
-            className={`card spotlight relative p-6 transition duration-500 ${i === active ? "border-accent/50 bg-ink-900/90 shadow-xl shadow-accent/10" : "opacity-10 lg:opacity-50"}`}
+            className={`card spotlight relative p-6 transition duration-500 max-lg:transition-[opacity,border-color,background-color,box-shadow] max-lg:duration-300 max-lg:backdrop-blur-none ${i === active ? "border-accent/50 bg-ink-900/90 shadow-xl shadow-accent/10" : "opacity-10 lg:opacity-50"}`}
           >
             <span
               className={`absolute top-7 -left-[33px] grid h-4 w-4 place-items-center rounded-full border transition duration-500 ${

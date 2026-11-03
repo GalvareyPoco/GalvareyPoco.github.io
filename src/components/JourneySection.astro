@@ -11,7 +11,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<section id="journey" class="mx-auto max-w-6xl scroll-mt-20 px-4 pt-24 sm:px-6">
+<section id="journey" class="mx-auto max-w-6xl overflow-x-clip scroll-mt-20 px-4 pt-24 sm:px-6">
   <SectionHeading index="02" kicker={t("journey.kicker")} title={t("journey.title")} />
   <p class="reveal -mt-4 mb-10 max-w-2xl text-lg text-slate-400">{t("journey.body")}</p>
   <Journey client:visible stops={journeyFor(lang)} places={placesFor(lang)} dragHint={t("journey.drag")} kmLabel={t("journey.km")} />

@@ -84,11 +84,13 @@ function StaticBadge({ info }: { info: BadgeInfo }) {
           <img src={info.photo} alt="" width="32" height="32" className="h-8 w-8 rounded-full object-cover ring-2 ring-accent" />
           <div className="min-w-0 flex-1 font-mono text-[11px]">
             <p className="text-white">@{info.handle}</p>
-            <p className="text-slate-400">
-              <span className="text-green-400">●</span> {info.status}
+            <p className="flex items-center gap-1.5 whitespace-nowrap text-slate-400">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-green-400" aria-hidden="true" />
+              {info.status}
             </p>
+            {/* The card is too narrow on mobile for a side-by-side pill, so it sits under the status. */}
+            <span className="mt-1 inline-block max-w-full truncate rounded-full border border-accent px-2 py-0.5 text-[10px] text-accent">{info.location}</span>
           </div>
-          <span className="rounded-full border border-accent px-2 py-0.5 font-mono text-[10px] text-accent">{info.location}</span>
         </div>
       </div>
     </div>
