@@ -41,7 +41,7 @@ type ProfileText = {
 // Everything on the page that is prose, in each language.
 const text: Localized<ProfileText> = {
   en: {
-    title: "Sr. Software Engineer · CTO at Happy Living",
+    title: "Sr. Software Engineer",
     roles: ["Sr. Software Engineer", "CTO at Happy Living", "Co-founder of Rebuscate", "Game Developer", "Maker & tinkerer"],
     location: "Asunción, Paraguay · Remote",
     about: [
@@ -61,7 +61,7 @@ const text: Localized<ProfileText> = {
     learning: ["Machine learning", "Big data", "Payment processing", "Game design & graphics programming"],
   },
   es: {
-    title: "Ingeniero de Software Sr. · CTO de Happy Living",
+    title: "Ingeniero de Software Sr.",
     roles: ["Ingeniero de Software Sr.", "CTO de Happy Living", "Cofundador de Rebuscate", "Desarrollador de videojuegos", "Maker y experimentador"],
     location: "Asunción, Paraguay · Remoto",
     about: [
@@ -81,7 +81,7 @@ const text: Localized<ProfileText> = {
     learning: ["Machine learning", "Big data", "Procesamiento de pagos", "Diseño de videojuegos y programación gráfica"],
   },
   fr: {
-    title: "Ingénieur logiciel senior · CTO de Happy Living",
+    title: "Ingénieur logiciel senior",
     roles: ["Ingénieur logiciel senior", "CTO chez Happy Living", "Cofondateur de Rebuscate", "Développeur de jeux vidéo", "Maker et bricoleur"],
     location: "Asunción, Paraguay · En télétravail",
     about: [
