@@ -2,12 +2,12 @@
 export const languages = { en: "English", es: "Español", fr: "Français" } as const;
 export type Lang = keyof typeof languages;
 export const langs = Object.keys(languages) as Lang[];
-export const defaultLang: Lang = "en";
+export const defaultLang: Lang = "es";
 
 /** A piece of text in every supported language. */
 export type Localized<T = string> = Record<Lang, T>;
 
-/** Path of the home page in a given language ("/", "/es/", "/fr/"). */
+/** Path of the home page in a given language ("/", "/en/", "/fr/"). */
 export function homePath(lang: Lang): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   return lang === defaultLang ? `${base}/` : `${base}/${lang}/`;
