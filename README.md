@@ -12,7 +12,7 @@ npm run build    # type-check + static build into dist/
 
 ## Edit the content
 
-The site is in English (`/`), Spanish (`/es/`) and French (`/fr/`). Every text lives in data files, with one entry per language where it differs:
+The site is in Spanish (`/`, the default), English (`/en/`) and French (`/fr/`). The old `/es/` URL redirects to `/`. Every text lives in data files, with one entry per language where it differs:
 
 | What | Where |
 |---|---|
