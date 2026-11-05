@@ -24,7 +24,7 @@ export function formatMonth(value: string | undefined, lang: Lang): string | und
 
 export const ui = {
   en: {
-    "meta.description": "Guillermo Alvarez (Galvarey) is a full-stack developer based in Asunción, Paraguay. Mobile, POS payments, games, AI and the infrastructure behind them.",
+    "meta.description": "Guillermo Alvarez (Galvarey) is a Sr. Software Engineer based in Asunción, Paraguay. Mobile, POS payments, games, AI and the infrastructure behind them.",
     "nav.about": "About",
     "nav.experience": "Experience",
     "nav.projects": "Projects",
@@ -129,7 +129,7 @@ export const ui = {
     "footer.terere": "replay the tereré",
   },
   es: {
-    "meta.description": "Guillermo Alvarez (Galvarey) es un desarrollador full-stack en Asunción, Paraguay. Apps móviles, pagos POS, videojuegos, IA y la infraestructura detrás de ellos.",
+    "meta.description": "Guillermo Alvarez (Galvarey) es un Ingeniero de Software Sr. en Asunción, Paraguay. Apps móviles, pagos POS, videojuegos, IA y la infraestructura detrás de ellos.",
     "nav.about": "Sobre mí",
     "nav.experience": "Experiencia",
     "nav.projects": "Proyectos",
@@ -234,7 +234,7 @@ export const ui = {
     "footer.terere": "repetir el tereré",
   },
   fr: {
-    "meta.description": "Guillermo Alvarez (Galvarey) est un développeur full-stack basé à Asunción, au Paraguay. Mobile, paiements POS, jeux vidéo, IA et l'infrastructure qui les fait tourner.",
+    "meta.description": "Guillermo Alvarez (Galvarey) est un ingénieur logiciel senior basé à Asunción, au Paraguay. Mobile, paiements POS, jeux vidéo, IA et l'infrastructure qui les fait tourner.",
     "nav.about": "À propos",
     "nav.experience": "Expérience",
     "nav.projects": "Projets",

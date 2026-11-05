@@ -15,17 +15,17 @@ export type TerminalData = {
 
 const SCRIPTS: Record<Lang, Step[]> = {
   en: [
-    { cmd: "whoami", out: ["galvarey · full-stack developer · asunción, py"] },
+    { cmd: "whoami", out: ["galvarey · sr. software engineer · asunción, py"] },
     { cmd: "cat focus.txt", out: ["react-native  payments/pos  unity/godot", "go  node  postgres  docker"] },
     { cmd: "ls ~/workshop", out: ["bambu-a1/  ender-5-plus/  halot-one/", "fusion360/  blender/  electronics/"] },
   ],
   es: [
-    { cmd: "whoami", out: ["galvarey · desarrollador full-stack · asunción, py"] },
+    { cmd: "whoami", out: ["galvarey · ingeniero de software sr. · asunción, py"] },
     { cmd: "cat enfoque.txt", out: ["react-native  pagos/pos  unity/godot", "go  node  postgres  docker"] },
     { cmd: "ls ~/taller", out: ["bambu-a1/  ender-5-plus/  halot-one/", "fusion360/  blender/  electronica/"] },
   ],
   fr: [
-    { cmd: "whoami", out: ["galvarey · développeur full-stack · asunción, py"] },
+    { cmd: "whoami", out: ["galvarey · ingénieur logiciel senior · asunción, py"] },
     { cmd: "cat domaines.txt", out: ["react-native  paiements/pos  unity/godot", "go  node  postgres  docker"] },
     { cmd: "ls ~/atelier", out: ["bambu-a1/  ender-5-plus/  halot-one/", "fusion360/  blender/  electronique/"] },
   ],
@@ -48,7 +48,7 @@ const T = {
       "sudo hire-me     you know you want to",
       "clear            clean the screen",
     ],
-    whoami: ["Guillermo Alvarez, aka Galvarey · full-stack dev, CTO and game maker from Asunción, Paraguay.", "10+ years in tech. Speaks ES · EN · FR. Likes turtles 🐢"],
+    whoami: ["Guillermo Alvarez, aka Galvarey · Sr. Software Engineer, CTO and game maker from Asunción, Paraguay.", "10+ years in tech. Speaks ES · EN · FR. Likes turtles 🐢"],
     notFound: (c: string) => `command not found: ${c}. try \`help\``,
     theme: (t: string) => `theme set to ${t}`,
     themeUsage: "usage: theme <terere|matrix|neon|amber|gold>",
@@ -76,7 +76,7 @@ const T = {
       "sudo hire-me     sabés que querés",
       "clear            limpiar la pantalla",
     ],
-    whoami: ["Guillermo Alvarez, aka Galvarey · dev full-stack, CTO y creador de videojuegos de Asunción, Paraguay.", "10+ años en tecnología. Habla ES · EN · FR. Le gustan las tortugas 🐢"],
+    whoami: ["Guillermo Alvarez, aka Galvarey · Ingeniero de Software Sr., CTO y creador de videojuegos de Asunción, Paraguay.", "10+ años en tecnología. Habla ES · EN · FR. Le gustan las tortugas 🐢"],
     notFound: (c: string) => `comando no encontrado: ${c}. probá \`help\``,
     theme: (t: string) => `tema cambiado a ${t}`,
     themeUsage: "uso: theme <terere|matrix|neon|amber|gold>",
@@ -104,7 +104,7 @@ const T = {
       "sudo hire-me     vous en avez envie",
       "clear            effacer l'écran",
     ],
-    whoami: ["Guillermo Alvarez, aka Galvarey · dev full-stack, CTO et créateur de jeux à Asunción, au Paraguay.", "10+ ans dans la tech. Parle ES · EN · FR. Adore les tortues 🐢"],
+    whoami: ["Guillermo Alvarez, aka Galvarey · ingénieur logiciel senior, CTO et créateur de jeux à Asunción, au Paraguay.", "10+ ans dans la tech. Parle ES · EN · FR. Adore les tortues 🐢"],
     notFound: (c: string) => `commande introuvable : ${c}. essayez \`help\``,
     theme: (t: string) => `thème : ${t}`,
     themeUsage: "usage : theme <terere|matrix|neon|amber|gold>",
