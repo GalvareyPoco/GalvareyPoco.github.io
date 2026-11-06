@@ -13,22 +13,25 @@
     "current": true,
     "highlights": {
       "en": [
-        "Built payment terminal software for a new POS product, from early prototyping through production rollout.",
-        "Developed native device integrations and the EMV payment flow.",
-        "Implemented secure terminal configuration and device-to-backend communication.",
-        "Built the POS frontend, and ran security and performance tests to find and fix issues."
+        "End-to-end implementation of POS terminals: PoC evaluation of devices from different manufacturers and models, and production rollout of the chosen solution.",
+        "Development of the contact and contactless EMV flow: parameter configuration and tuning, EMV trace analysis across card brands and processors, and certification with Visa and Mastercard.",
+        "ISO 8583 messaging on the POS, including building field 55 with the chip's EMV data.",
+        "Remote key injection (RKI) and terminal fleet management through TMS.",
+        "Real-time integration between POS, cash register systems (ECR) and backend with MQTT, Mercure, WebSockets and REST."
       ],
       "es": [
-        "Desarrollé el software de terminales de pago para un nuevo producto POS, desde los primeros prototipos hasta su despliegue en producción.",
-        "Desarrollé las integraciones nativas con los dispositivos y el flujo de pago EMV.",
-        "Implementé la configuración segura de terminales y la comunicación entre dispositivos y backend.",
-        "Construí el frontend del POS y realicé pruebas de seguridad y rendimiento para detectar y corregir problemas."
+        "Implementación de terminales POS de punta a punta: evaluación con PoCs de equipos de distintos fabricantes y modelos, y puesta en producción de la solución elegida.",
+        "Desarrollo del flujo EMV de contacto y contactless: configuración y ajuste de parámetros, análisis de trazas EMV entre marcas y procesadoras, y certificación con Visa y Mastercard.",
+        "Mensajería ISO 8583 en el POS, incluido el armado del campo 55 con los datos EMV del chip.",
+        "Inyección remota de llaves (RKI) y gestión de la flota de terminales mediante TMS.",
+        "Integración en tiempo real entre POS, sistemas de caja (ECR) y backend con MQTT, Mercure, WebSockets y REST."
       ],
       "fr": [
-        "Développement du logiciel de terminal de paiement d'un nouveau produit POS, des premiers prototypes jusqu'au déploiement en production.",
-        "Développement des intégrations natives avec les terminaux et du parcours de paiement EMV.",
-        "Mise en place de la configuration sécurisée des terminaux et de la communication entre terminaux et backend.",
-        "Développement du frontend POS et tests de sécurité et de performance pour détecter et corriger les problèmes."
+        "Mise en œuvre de bout en bout de terminaux de paiement : évaluation par PoC d'équipements de différents fabricants et modèles, et mise en production de la solution retenue.",
+        "Développement du flux EMV contact et sans contact : configuration et ajustement des paramètres, analyse des traces EMV entre réseaux de cartes et processeurs, et certification avec Visa et Mastercard.",
+        "Messagerie ISO 8583 sur le terminal, y compris la construction du champ 55 avec les données EMV de la puce.",
+        "Injection de clés à distance (RKI) et gestion du parc de terminaux via TMS.",
+        "Intégration en temps réel entre terminaux, systèmes de caisse (ECR) et backend avec MQTT, Mercure, WebSockets et REST."
       ]
     },
     "order": 1
